@@ -5,6 +5,8 @@ import { createEntity } from "generate-anything";
 // I'll want edit component functionality as well, especially if want to link a generator component to another generator component that isn't created yet.
 // I should maybe just have all of the attributes just be field form elements rather than set as text so you can edit it at any time.
 
+// Probably should have a placeholder value if you haven't reacted the generator component yet.
+
 export default function CreateEntityComponent(props) {
 
     const [errorMsg, setErrorMsg] = useState("");
@@ -15,6 +17,7 @@ export default function CreateEntityComponent(props) {
     }
     const [name, setName] = useState("");
     const [attributes, setAttributes] = useState({});
+    //const [attributeName, 
 
     const [attributeKey, setAttributeKey] = useState("");
     const [attributeValue, setAttributeValue] = useState("");
@@ -52,6 +55,14 @@ export default function CreateEntityComponent(props) {
 
     const setEventValue = (setter) => (event) => setter(event.target.value);
 
+    const selectAttribute = (event) => {
+        setAttributeKey(event.target.value);
+        setAttributeValue(props.generators(event.target.value));
+    };
+
+    const options = Object.keys(props.generators)
+        .map(key => <option value={key}>{key}</option>);
+
     return (
         <div className="create-entity">
             <h2>Creating an Entity</h2>
@@ -74,8 +85,13 @@ export default function CreateEntityComponent(props) {
                     
                     <label>
                         Attribute Value:
-                        <input type="text" value={attributeValue} onChange={setEventValue(setAttributeValue)} />
+                        <input type="text"/>
                     </label>
+
+                    <select onChange={selectAttribute}>
+                        {options}
+                    </select>
+
                 </div>
 
                 <button type="button" onClick={addAttribute}>Add Attribute</button>
