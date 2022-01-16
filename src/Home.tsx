@@ -1,9 +1,14 @@
 import React from "react";
 
-function Home() {
+function Home(props) {
+    const list = (name, index) => <li key={index}>{name}</li>;
+
     return (
     <div>
-        <p>Home</p>
+        <h1>Home</h1>
+        <ol>
+            {Object.keys(props.generators).map(list)}
+        </ol>
     </div>
     );
 }
