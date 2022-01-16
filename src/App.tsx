@@ -11,7 +11,6 @@ function keyValueReducer(state, action) {
     let reduced;
     switch(action.kind) {
         case "set":
-            console.log("Setting");
             reduced = { ...state, [action.key]: action.value };
             break;
         default:

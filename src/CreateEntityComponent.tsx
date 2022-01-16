@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import { createEntity } from "generate-anything";
+import { emptyGenerator, GeneratorField } from "./Fields";
 
+const setEventValue = (setter) => (event) => setter(event.target.value);
 
-// I'll want edit component functionality as well, especially if want to link a generator component to another generator component that isn't created yet.
-// I should maybe just have all of the attributes just be field form elements rather than set as text so you can edit it at any time.
+function Attribute(props) {
+    return (<li key={props.index}>
+                <label>
+                    Attribute Name:
+                    <input type="text" value={props.name} onChange={setEventValue(props.setName)} />
+                </label>
 
-// Probably should have a placeholder value if you haven't reacted the generator component yet.
+                <GeneratorField
+                value={props.value}
+                generatorSetter={setEventValue(props.setValue)}
+                generators={props.generators}
+                />
+            </li>);
+}
 
 export default function CreateEntityComponent(props) {
 
@@ -15,20 +27,27 @@ export default function CreateEntityComponent(props) {
     if (errorMsg !== "") {
         errorMsgComponent = (<p>{errorMsg}</p>);
     }
+
     const [name, setName] = useState("");
-    const [attributes, setAttributes] = useState({});
-    //const [attributeName, 
+    
+    const reducer = (state, action) => {
+        switch(action.kind) {
+            case "add":
+                return [...state, {name: action.name, value: action.value}];
+            case "setName":
+                const newList = [...state];
+                newList[action.index].name = action.name;
+                return newList;
+            case "setValue":
+                const otherNewList = [...state];
+                otherNewList[action.index].value = action.value;
+                return otherNewList;
+            default:
+                throw new Error();
+        }
+    };
 
-    const [attributeKey, setAttributeKey] = useState("");
-    const [attributeValue, setAttributeValue] = useState("");
-
-    const attributeUi = Object.keys(attributes).map(key => 
-        (<div>
-            <p>Attribute</p>
-            <p>Name: {key}</p>
-            <p>Gen name: {attributes[key]}</p>
-        </div>);
-    );
+    const [attributes, attributesDispatch] = useReducer(reducer, []);
 
     const submit = (event) => {
         event.preventDefault();
@@ -41,27 +60,27 @@ export default function CreateEntityComponent(props) {
     }
 
     const addAttribute = () => {
-        if (attributeKey === "") {
-            setErrorMsg("Attribute name cannot be blank.");
-            return;
-        } else if (!(attributeKey in Object.keys(attributes))) {
-            setErrorMsg("There's already an attribute with that name.");
-            return;
-        }
-
-       setErrorMsg("");
-       setAttributes({ ...attributes, [attributeKey]: attributeValue});
+        attributesDispatch({
+        kind: "add",
+        name: "",
+        value: emptyGenerator,
+        });
     }
 
-    const setEventValue = (setter) => (event) => setter(event.target.value);
+    const setAttributeName = index => name => attributesDispatch({kind: "setName", index: index, name: name});
+    const setValue = index => value => attributesDispatch({kind: "setValue", index: index, value: value});
 
-    const selectAttribute = (event) => {
-        setAttributeKey(event.target.value);
-        setAttributeValue(props.generators(event.target.value));
-    };
-
-    const options = Object.keys(props.generators)
-        .map(key => <option value={key}>{key}</option>);
+    const attributeFields = attributes
+        .map((attribute, index) =>
+            <Attribute
+            index={index}
+            name={attribute.name}
+            value={attribute.value}
+            generators={props.generators}
+            setValue={setValue(index)}
+            setName={setAttributeName(index)}
+            />
+            );
 
     return (
         <div className="create-entity">
@@ -75,24 +94,9 @@ export default function CreateEntityComponent(props) {
                     </label>
                 </div>
 
-                {attributeUi}
-                
-                <div>
-                    <label>
-                        Attribute Name:
-                        <input type="text" value={attributeKey} onChange={setEventValue(setAttributeKey)} />
-                    </label>
-                    
-                    <label>
-                        Attribute Value:
-                        <input type="text"/>
-                    </label>
-
-                    <select onChange={selectAttribute}>
-                        {options}
-                    </select>
-
-                </div>
+                <ol>
+                    {attributeFields}
+                </ol>
 
                 <button type="button" onClick={addAttribute}>Add Attribute</button>
 

@@ -1,41 +1,7 @@
 import React, { useState, useReducer } from "react";
 import * as _ from "lodash/fp";
 import { GeneratorRepr } from "generate-anything";
-
-const emptyGenerator: unique symbol = Symbol();
-
-// Probably could be reusable
-function GeneratorField(props) {
-
-    const options = Object.keys(props.generators)
-        .map(key => <option value={key}>{key}</option>);
-
-    const selectGenerator = event => _.compose([
-        props.generatorSetter,
-        props.generators.find,
-        g => g.name === event.target.value
-        ]);
-
-    let value;
-
-    if (props.value === emptyGenerator) {
-        value = "<Unselected>";
-    } else {
-        value = props.value.name;
-    }
-
-    return <select value={value} onChange={selectGenerator}>{options}</select>;
-}
-
-// Display, get value, set value.
-// New fields
-// String and generator values
-function ValueField(props) {
-    const temp = event => {
-        props.setValue(event.target.value)
-    };
-    return <input type="text" value={props.value} onChange={temp} />;
-}
+import { emptyGenerator, GeneratorField, ValueField } from "./Fields";
 
 export default function CreateTableComponent(props) {
     const setEventValue = (setter) => (event) => setter(event.target.value);
@@ -63,6 +29,7 @@ export default function CreateTableComponent(props) {
         event.preventDefault();
 
         // Validation
+        // TODO Check and make sure there's at least one value in the table as well.
         if (values.includes(emptyGenerator))) {
             setTableError("Can't have an empty generator field.");
         } else {
@@ -70,7 +37,6 @@ export default function CreateTableComponent(props) {
         }
 
         const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
-        console.log(newTable);
         props.setGenerators({kind: "set", key: name, value: newTable});
     };
 
