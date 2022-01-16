@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from "react";
-import { createEntity } from "generate-anything";
+import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
@@ -54,8 +54,8 @@ export default function CreateEntityComponent(props) {
 
         // Set the new entity value
         if (name !== "" && !(name in Object.keys(props.generators))) {
-            const newEntity = createEntity(name, attributes);
-            props.setGenerators(name, newEntity);
+            const newEntity = GeneratorRepr.createEntity(name, attributes);
+            props.setGenerators({kind: "set", key: name, value: newEntity});
         }
     }
 

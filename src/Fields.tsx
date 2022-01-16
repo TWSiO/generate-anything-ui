@@ -1,18 +1,23 @@
+import * as _ from "lodash/fp";
 
 export const emptyGenerator: unique symbol = Symbol();
 
 // Probably could be reusable
 export function GeneratorField(props) {
-    console.log(props.generators);
 
     const options = Object.keys(props.generators)
         .map(key => <option value={key}>{key}</option>);
 
-    const selectGenerator = event => _.compose([
+/*
+    const selectGenerator = _.compose([
         props.generatorSetter,
-        props.generators.find,
-        g => g.name === event.target.value
+        _.get(props.generators),
+        _.flip(_.get("target.value"))
         ]);
+        */
+
+    // I want to make this the nice composed version, but need to debug with longer version first.
+    const selectGenerator = event => props.generatorSetter(props.generators[event.target.value]);
 
     let value;
 

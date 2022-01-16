@@ -28,7 +28,7 @@ export default function App() {
             <Header />
             <Routes>
                 <Route path="/" element={<Home generators={generators} />} />
-                <Route path="/generator/create" element={<CreateGeneratorComponent/>}>
+                <Route path="/generator/create" element={<CreateGeneratorComponent />}>
                     <Route path="table" element={
                     <CreateTableComponent generators={generators} setGenerators={setGenerators} />
                     } />
