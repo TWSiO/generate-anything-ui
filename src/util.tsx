@@ -35,3 +35,54 @@ function generatorToJson(generator) {
 }
 
 export const generatorsToJson = _.compose([JSON.stringify, _.flip(_.mapValues)(generatorToJson)]);
+
+const dereferenceGenerator = _.curry((all, ref) => {
+
+    if ((typeof ref === "object") && ("kind" in ref) && ref.kind === "reference") {
+        if (!(ref.name in all)) {
+            // TODO
+            throw new Error("Invalid generator JSON");
+        }
+
+        return all[ref.name];
+    }
+
+    return ref;
+});
+
+function jsonToGenerator(all, generator) {
+    if (!(generator.name in all)) {
+        // TODO
+        throw new Error("Invalid generator JSON");
+    }
+    switch(generator.kind) {
+        case "table":
+            generator.table = generator.table.map(dereferenceGenerator(all));
+
+            return generator;
+        case "entity":
+            generator.attributes = _.mapValues(generators.attributes, attr => {
+                return all[attr.name]
+            });
+            return generator;
+        default:
+            throw new Error();
+    }
+}
+
+export function jsonToGenerators(jsonString) {
+    const deserialized = JSON.parse(jsonString);
+
+    if (typeof deserialized !== "object") {
+        // TODO Invalid
+        throw new Error("Invalid generator JSON");
+    }
+
+    // TODO
+    //return _.mapValues(deserialized, val => _.curry(jsonToGenerator)(deserialized)(val));
+    for (const foo in deserialized) {
+        deserialized[foo] = jsonToGenerator(deserialized, deserialized[foo]);
+    }
+
+    return deserialized;
+}

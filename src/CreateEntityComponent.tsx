@@ -13,7 +13,7 @@ function Attribute(props) {
 
                 <GeneratorField
                 value={props.value}
-                generatorSetter={setEventValue(props.setValue)}
+                generatorSetter={props.setValue}
                 generators={props.generators}
                 />
             </li>);

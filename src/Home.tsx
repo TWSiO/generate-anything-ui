@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { generatorsToJson } from "./util";
+import { generatorsToJson, jsonToGenerators } from "./util";
+import { Link } from "react-router-dom";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
@@ -7,20 +8,23 @@ function Home(props) {
     
     let jsonElem = "";
     if (jsonString !== "") {
-        console.log(jsonString);
         jsonElem = <code>{jsonString}</code>
     }
 
-    const list = (name, index) => <li key={index}>{name}</li>;
+    const list = (name, index) => <li key={index}>{name} <Link to={`/generator/run/${name}`}>Generate</Link></li>;
 
-    const handleSubmit = event => props.setGenerators(JSON.parse(importJson));
+    const handleSubmit = event => {
+        event.preventDefault();
+
+        props.setGenerators({
+            kind: "import",
+            value: jsonToGenerators(importJson),
+        });
+    };
 
     return (
     <div>
         <h1>Home</h1>
-        <ol>
-            {Object.keys(props.generators).map(list)}
-        </ol>
 
         <form onSubmit={handleSubmit}>
             <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />
@@ -30,6 +34,10 @@ function Home(props) {
         <button type="button" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</button>
 
         {jsonElem}
+
+        <ol>
+            {Object.keys(props.generators).map(list)}
+        </ol>
     </div>
     );
 }
