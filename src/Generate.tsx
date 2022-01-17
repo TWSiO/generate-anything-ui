@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ValueTree } from "generate-anything";
+import { newRoot, root } from "generate-anything";
 
 // May want to keep track of generator + seed combinations. More a convenience thing I suppose.
 
 export function SetSeed(props) {
-    console.log("Set seed");
+    const navigate = useNavigate();
     const genName = useParams().name;
 
     const [seed, setSeed] = useState("");
@@ -13,7 +13,7 @@ export function SetSeed(props) {
     const handleSubmit = event => {
         event.preventDefault();
 
-        useNavigate()(`/generator/run/${genName}/${seed}`);
+        navigate(`/generator/run/${genName}/${seed}`);
     };
 
     return (
@@ -40,10 +40,13 @@ export function SetSeed(props) {
 }
 
 function GeneratorValue(props) {
+    const handleClick = event => props.setCurrent(props.value);
+
+    console.log(handleClick);
     return (
         <span>
          {props.value.generator.name}
-         <button onClick{event => props.setCurrent(props.value)}>Generate</button>
+         <button type="button" onClick={handleClick}>Go to generator</button>
         </span>
     );
 }
@@ -54,17 +57,22 @@ function Value(props) {
             const val = props.value.get();
             let displayVal;
 
-            switch (val) {
+            console.log(val);
+            switch (val.kind) {
                 case "scalar":
                     displayVal = val.leaf;
+                    break;
                 default:
+                    console.log("Table");
                     displayVal = <GeneratorValue value={val} setCurrent={props.setCurrent} />
             }
 
+            console.log(val);
+            console.log(displayVal);
             return (
                 <div>
                     <h3>Table</h3>
-                    <div>Value: {props.value}</div>
+                    <div>Value: {displayVal}</div>
                 </div>
             );
         case "entity":
@@ -72,6 +80,7 @@ function Value(props) {
             const i = 0;
             let attributes = [];
 
+            console.log("Entity");
             for (const key in vals) {
                 attributes.push(<li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>);
                 i++;
@@ -94,13 +103,16 @@ export default function Generate(props) {
     const seed = useParams().seed;
     const generator = props.generators[genName];
 
-    const root = ValueTree.newRoot(seed, generator);
+    const rootVal = newRoot(seed, generator);
 
-    const [current, setCurrent] = useState(root);
+    const [current, setCurrent] = useState(rootVal);
 
     let goToParentButton = "";
 
-    if (current.parent !== ValueTree.root) {
+    console.log(current.parent);
+    console.log(root);
+    if (current.parent !== root) {
+        console.log("Putting parent");
         goToParentButton = <button type="button" onClick={() => setCurrent(current.parent)}>Go to Parent</button>
     }
 

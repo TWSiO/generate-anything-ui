@@ -24,7 +24,7 @@ function Home(props) {
 
     return (
     <div>
-        <h1>Home</h1>
+        <h1>Generate Anything</h1>
 
         <form onSubmit={handleSubmit}>
             <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />

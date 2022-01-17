@@ -10,7 +10,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // This would probably be easier with redux. Will probably refactor later.
 function keyValueReducer(state, action) {
     let reduced;
-    console.log(action);
     switch(action.kind) {
         case "set":
             reduced = { ...state, [action.key]: action.value };
