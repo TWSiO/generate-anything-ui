@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { generatorsToJson, jsonToGenerators } from "./util";
+import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
 import { Link } from "react-router-dom";
 import * as _ from "lodash/fp";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
     const [importJson, setImportJson] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+
+    let errorMsgComponent = null;
+    if (errorMsg !== "") {
+        errorMsgComponent = (<p>{errorMsg}</p>);
+    }
     
     let jsonElem = "";
     if (jsonString !== "") {
@@ -16,11 +22,18 @@ function Home(props) {
 
     const handleSubmit = event => {
         event.preventDefault();
+        
+        const merged = mergeGeneratorSets(props.generators, jsonToGenerators(importJson));
 
-        props.setGenerators({
-            kind: "import",
-            value: jsonToGenerators(importJson),
-        });
+        if (merged === duplicateNames) {
+            setErrorMsg("Imported JSON has a generator with the same name as an existing generator.");
+        } else {
+            setErrorMsg("");
+            props.setGenerators({
+                kind: "import",
+                value: merged,
+            });
+        }
     };
 
     return (
@@ -29,7 +42,8 @@ function Home(props) {
 
         <form onSubmit={handleSubmit}>
             <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />
-            <input type="submit" value="Import JSON" />
+            {errorMsgComponent}
+            <input type="submit" value="Merge imported JSON" />
         </form>
 
         <button type="button" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</button>

@@ -85,3 +85,16 @@ export function jsonToGenerators(jsonString) {
 }
 
 export const hasDuplicates = list => (new Set(list)).size !== list.length;
+
+// Could use null or throw exception, but wanted to try this out. If other people collaborate on this codebase, should probably change to something more conventional.
+export const duplicateNames: unique symbol = Symbol("Has duplicate names");
+
+export function mergeGeneratorSets(setA, setB) {
+    const hasMatchingNames = hasDuplicates(_.concat(Object.keys(setA), Object.keys(setB)));
+
+    if (hasMatchingNames) {
+        return duplicateNames;
+    }
+
+    return {...setA, ...setB};
+}
