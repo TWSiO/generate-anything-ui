@@ -27,14 +27,15 @@ function generatorToJson(generator) {
 
             return clone;
         case "entity":
-            clone.attributes = _.mapValues(clone.attributes, referencedGeneratorToJson);
+            console.log(clone.attributes);
+            clone.attributes = _.mapValues(referencedGeneratorToJson)(clone.attributes);
             return clone;
         default:
             throw new Error();
     }
 }
 
-export const generatorsToJson = _.compose([JSON.stringify, _.flip(_.mapValues)(generatorToJson)]);
+export const generatorsToJson = _.compose([JSON.stringify, _.mapValues(generatorToJson)]);
 
 const dereferenceGenerator = _.curry((all, ref) => {
 
@@ -55,15 +56,17 @@ function jsonToGenerator(all, generator) {
         // TODO
         throw new Error("Invalid generator JSON");
     }
+
     switch(generator.kind) {
         case "table":
             generator.table = generator.table.map(dereferenceGenerator(all));
 
             return generator;
         case "entity":
-            generator.attributes = _.mapValues(generators.attributes, attr => {
+            generator.attributes = _.mapValues(attr => {
                 return all[attr.name]
-            });
+            })(generator.attributes);
+
             return generator;
         default:
             throw new Error();
@@ -78,11 +81,7 @@ export function jsonToGenerators(jsonString) {
         throw new Error("Invalid generator JSON");
     }
 
-    // TODO
-    //return _.mapValues(deserialized, val => _.curry(jsonToGenerator)(deserialized)(val));
-    for (const foo in deserialized) {
-        deserialized[foo] = jsonToGenerator(deserialized, deserialized[foo]);
-    }
-
-    return deserialized;
+    return _.mapValues(val => _.curry(jsonToGenerator)(deserialized)(val))(deserialized);
 }
+
+export const hasDuplicates = list => (new Set(list)).size !== list.length;

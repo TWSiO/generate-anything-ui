@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { generatorsToJson, jsonToGenerators } from "./util";
 import { Link } from "react-router-dom";
+import * as _ from "lodash/fp";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");

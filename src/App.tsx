@@ -6,6 +6,7 @@ import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
 import Generate, { SetSeed } from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import * as _ from "lodash/fp";
 
 // This would probably be easier with redux. Will probably refactor later.
 function keyValueReducer(state, action) {

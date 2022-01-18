@@ -1,6 +1,8 @@
 import React, { useState, useReducer } from "react";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
+import { hasDuplicates } from "./util";
+import * as _ from "lodash/fp";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
 
@@ -52,9 +54,22 @@ export default function CreateEntityComponent(props) {
     const submit = (event) => {
         event.preventDefault();
 
-        // Set the new entity value
-        if (name !== "" && !(name in Object.keys(props.generators))) {
-            const newEntity = GeneratorRepr.createEntity(name, attributes);
+        const getNames = _.map(_.flip(_.get)("name"))
+        const hasDuplicateNames = _.compose([hasDuplicates, getNames]);
+
+        if (hasDuplicateNames(attributes)) {
+            setErrorMsg("Can't have attributes with the same name.");
+        } else if (name !== "" && !(name in Object.keys(props.generators))) {
+            const reducer = (accum, val) => {
+                accum[val.name] = val.value;
+                return accum;
+            }
+
+            const objAttr = attributes.reduce(reducer, {});
+
+            // Set the new entity value
+            setErrorMsg("");
+            const newEntity = GeneratorRepr.createEntity(name, objAttr);
             props.setGenerators({kind: "set", key: name, value: newEntity});
         }
     }

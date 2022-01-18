@@ -42,7 +42,6 @@ export function SetSeed(props) {
 function GeneratorValue(props) {
     const handleClick = event => props.setCurrent(props.value);
 
-    console.log(handleClick);
     return (
         <span>
          {props.value.generator.name}
@@ -57,18 +56,14 @@ function Value(props) {
             const val = props.value.get();
             let displayVal;
 
-            console.log(val);
             switch (val.kind) {
                 case "scalar":
                     displayVal = val.leaf;
                     break;
                 default:
-                    console.log("Table");
                     displayVal = <GeneratorValue value={val} setCurrent={props.setCurrent} />
             }
 
-            console.log(val);
-            console.log(displayVal);
             return (
                 <div>
                     <h3>Table</h3>
@@ -77,14 +72,9 @@ function Value(props) {
             );
         case "entity":
             const vals = props.value.getAll();
-            const i = 0;
-            let attributes = [];
-
-            console.log("Entity");
-            for (const key in vals) {
-                attributes.push(<li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>);
-                i++;
-            }
+            const attributes = Object.keys(vals).map((key, i) =>
+                <li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>
+            );
 
             return (
                 <div>
@@ -109,10 +99,7 @@ export default function Generate(props) {
 
     let goToParentButton = "";
 
-    console.log(current.parent);
-    console.log(root);
     if (current.parent !== root) {
-        console.log("Putting parent");
         goToParentButton = <button type="button" onClick={() => setCurrent(current.parent)}>Go to Parent</button>
     }
 
