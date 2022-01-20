@@ -2,6 +2,7 @@ import React, { useState, useReducer } from "react";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
 import { hasDuplicates } from "./util";
+import { useParams } from "react-router-dom";
 import * as _ from "lodash/fp";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
@@ -21,6 +22,40 @@ function Attribute(props) {
             </li>);
 }
 
+const getNames = _.map(_.flip(_.get)("name"))
+const hasDuplicateNames = _.compose([hasDuplicates, getNames]);
+
+function uncurriedSubmit(attributes, name, initName, generators, setErrorMsg, setGenerators, event) {
+    event.preventDefault();
+
+    if (hasDuplicateNames(attributes)) {
+        setErrorMsg("Can't have attributes with the same name");
+    } else if (name === "") {
+        setErrorMsg("Generator name can't be blank");
+    } else {
+        const reducer = (accum, val) => {
+            accum[val.name] = val.value;
+            return accum;
+        }
+
+        const objAttr = attributes.reduce(reducer, {});
+
+        let setEntity;
+        // Set the new entity value
+        if (!(name in generators)) {
+            setEntity = GeneratorRepr.createEntity(name, objAttr);
+        } else {
+            const toModify = generators[name]
+            toModify.attributes = objAttr;
+            setEntity = toModify
+        }
+        setGenerators({kind: "set", key: name, value: setEntity});
+        setErrorMsg("");
+    }
+}
+
+const submit = _.curry(uncurriedSubmit);
+
 export default function CreateEntityComponent(props) {
 
     const [errorMsg, setErrorMsg] = useState("");
@@ -30,7 +65,17 @@ export default function CreateEntityComponent(props) {
         errorMsgComponent = (<p>{errorMsg}</p>);
     }
 
-    const [name, setName] = useState("");
+    let initAttributes = [];
+    let initName = useParams()?.name;
+
+    if (initName !== undefined) {
+        const attr = props.generators[initName].attributes
+        initAttributes = _.map(key => ({name: key, value: attr[key]}))(_.keys(attr));
+    } else {
+        initName = "";
+    }
+
+    const [name, setName] = useState(initName);
     
     const reducer = (state, action) => {
         switch(action.kind) {
@@ -49,30 +94,7 @@ export default function CreateEntityComponent(props) {
         }
     };
 
-    const [attributes, attributesDispatch] = useReducer(reducer, []);
-
-    const submit = (event) => {
-        event.preventDefault();
-
-        const getNames = _.map(_.flip(_.get)("name"))
-        const hasDuplicateNames = _.compose([hasDuplicates, getNames]);
-
-        if (hasDuplicateNames(attributes)) {
-            setErrorMsg("Can't have attributes with the same name.");
-        } else if (name !== "" && !(name in Object.keys(props.generators))) {
-            const reducer = (accum, val) => {
-                accum[val.name] = val.value;
-                return accum;
-            }
-
-            const objAttr = attributes.reduce(reducer, {});
-
-            // Set the new entity value
-            setErrorMsg("");
-            const newEntity = GeneratorRepr.createEntity(name, objAttr);
-            props.setGenerators({kind: "set", key: name, value: newEntity});
-        }
-    }
+    const [attributes, attributesDispatch] = useReducer(reducer, initAttributes);
 
     const addAttribute = () => {
         attributesDispatch({
@@ -101,7 +123,7 @@ export default function CreateEntityComponent(props) {
         <div className="create-entity">
             <h2>Creating an Entity</h2>
             {errorMsgComponent}
-            <form onSubmit={submit}>
+            <form onSubmit={submit(attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
                 <div>
                     <label>
                         Name:

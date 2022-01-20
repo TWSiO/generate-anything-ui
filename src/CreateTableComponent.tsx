@@ -2,11 +2,25 @@ import React, { useState, useReducer } from "react";
 import * as _ from "lodash/fp";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField, ValueField } from "./Fields";
+import { useParams } from "react-router-dom";
 
 export default function CreateTableComponent(props) {
+
     const setEventValue = (setter) => (event) => setter(event.target.value);
 
-    const [name, setName] = useState("");
+    let initName = useParams()?.name;
+    let initValues = [];
+
+    console.log(initName);
+    if (initName !== undefined) {
+        initValues = props.generators[initName].table;
+    } else {
+        initName = "";
+    }
+    console.log(initName);
+    console.log(initValues);
+
+    const [name, setName] = useState(initName);
     const [tableError, setTableError] = useState("");
     // TODO Add state for individual field messages
 
@@ -23,7 +37,8 @@ export default function CreateTableComponent(props) {
                 throw new Error();
         }
     };
-    const [values, valuesDispatch] = useReducer(reducer, []);
+
+    const [values, valuesDispatch] = useReducer(reducer, initValues);
 
     const handleSubmit = (event) => {
         event.preventDefault();

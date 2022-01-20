@@ -2,6 +2,7 @@ import React, { useReducer } from 'react';
 import Header from "./Header";
 import Home from "./Home";
 import CreateGeneratorComponent from "./CreateGeneratorComponent";
+import EditGeneratorComponent from "./EditGeneratorComponent";
 import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
 import Generate, { SetSeed } from "./Generate";
@@ -44,10 +45,12 @@ export default function App() {
                     } />
 
                     <Route path="entity" element={
-                        <CreateEntityComponent generators={generators} setGenerators={setGenerators}  />
+                        <CreateEntityComponent generators={generators} setGenerators={setGenerators} />
                     } />
 
                 </Route>
+
+                <Route path="/generator/edit/:name" element={<EditGeneratorComponent generators={generators} setGenerators={setGenerators} />} />
 
                 <Route path="/generator/run/:name" element={<SetSeed />} />
                 <Route path="/generator/run/:name/:seed" element={<Generate generators={generators} />} />

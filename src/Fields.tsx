@@ -21,11 +21,18 @@ export function GeneratorField(props) {
 
     let value;
 
-    if (props.value === emptyGenerator) {
-        value = "<Unselected>";
+    if (options.length === 0) {
+        return <p>No generators defined. This attribute won't be saved.</p>;
+    } else if (props.value === emptyGenerator) {
+        // Setting it to the first value since that's what dropdown list defaults to.
+        const firstGen = props.generators[Object.keys(props.generators)[0]];
+        value = firstGen.name;
+        props.generatorSetter(firstGen);
     } else {
         value = props.value.name;
     }
+
+    console.log(props.value);
 
     return <select value={value} onChange={selectGenerator}>{options}</select>;
 }

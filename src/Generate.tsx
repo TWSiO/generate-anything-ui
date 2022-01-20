@@ -72,9 +72,8 @@ function Value(props) {
             );
         case "entity":
             const vals = props.value.getAll();
-            const attributes = Object.keys(vals).map((key, i) =>
-                <li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>
-            );
+            const createGenVal = (key, i) => <li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>;
+            const attributes = Object.keys(vals).map(createGenVal);
 
             return (
                 <div>

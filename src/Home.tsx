@@ -18,7 +18,9 @@ function Home(props) {
         jsonElem = <code>{jsonString}</code>
     }
 
-    const list = (name, index) => <li key={index}>{name} <Link to={`/generator/run/${name}`}>Generate</Link></li>;
+    const list = (name, index) => <li key={index}>
+        {name} <Link to={`/generator/edit/${name}`}>Edit</Link> <Link to={`/generator/run/${name}`}>Generate</Link>
+        </li>;
 
     const handleSubmit = event => {
         event.preventDefault();
