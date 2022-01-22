@@ -3,6 +3,7 @@ import * as _ from "lodash/fp";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField, ValueField } from "./Fields";
 import { useParams } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 export default function CreateTableComponent(props) {
 
@@ -69,7 +70,7 @@ export default function CreateTableComponent(props) {
     });
 
     return (
-        <div className="create-table">
+        <main className="create-table container">
             <h2>Creating a table</h2>
 
             <form onSubmit={handleSubmit}>
@@ -84,10 +85,10 @@ export default function CreateTableComponent(props) {
                     {valueFields}
                 </ol>
 
-                <button type="button" onClick={() => valuesDispatch({kind: "add", value: ""})}>New Value</button>
-                <button type="button" onClick={() => valuesDispatch({kind: "add", value: emptyGenerator})}>New Generator Value</button>
-                <input type="submit" value="Submit" />
+                <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: ""})}>New Value</Button>
+                <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: emptyGenerator})}>New Generator Value</Button>
+                <Button as="input" type="submit" value="Save" />
             </form>
-        </div>
+        </main>
     );
 }

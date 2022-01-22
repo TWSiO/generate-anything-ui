@@ -4,6 +4,7 @@ import { emptyGenerator, GeneratorField } from "./Fields";
 import { hasDuplicates } from "./util";
 import { useParams } from "react-router-dom";
 import * as _ from "lodash/fp";
+import Button from "react-bootstrap/Button";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
 
@@ -120,7 +121,7 @@ export default function CreateEntityComponent(props) {
             );
 
     return (
-        <div className="create-entity">
+        <main className="create-entity container">
             <h2>Creating an Entity</h2>
             {errorMsgComponent}
             <form onSubmit={submit(attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
@@ -135,10 +136,10 @@ export default function CreateEntityComponent(props) {
                     {attributeFields}
                 </ol>
 
-                <button type="button" onClick={addAttribute}>Add Attribute</button>
+                <Button onClick={addAttribute}>Add Attribute</Button>
 
-                <input type="submit" value="Submit" />
+                <Button as="input" type="submit" value="Submit" />
             </form>
-        </div>
+        </main>
     );
 }

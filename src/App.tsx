@@ -5,9 +5,13 @@ import CreateGeneratorComponent from "./CreateGeneratorComponent";
 import EditGeneratorComponent from "./EditGeneratorComponent";
 import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
+import About from "./About";
 import Generate, { SetSeed } from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as _ from "lodash/fp";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 // This would probably be easier with redux. Will probably refactor later.
 function keyValueReducer(state, action) {
@@ -29,14 +33,17 @@ function keyValueReducer(state, action) {
 export default function App() {
     const [generators, setGenerators] = useReducer(keyValueReducer, {});
     return (
-    <div className="app">
+    <React.Fragment>
         <BrowserRouter>
             <Header />
+
             <Routes>
                 <Route
                 path="/"
                 element={<Home generators={generators} setGenerators={setGenerators} />}
                 />
+
+                <Route path="/about" element={<About />} />
 
                 <Route path="/generator/create" element={<CreateGeneratorComponent />}>
 
@@ -50,7 +57,12 @@ export default function App() {
 
                 </Route>
 
-                <Route path="/generator/edit/:name" element={<EditGeneratorComponent generators={generators} setGenerators={setGenerators} />} />
+                <Route
+                    path="/generator/edit/:name"
+                    element={
+                        <EditGeneratorComponent generators={generators} setGenerators={setGenerators}
+                        />}
+                    />
 
                 <Route path="/generator/run/:name" element={<SetSeed />} />
                 <Route path="/generator/run/:name/:seed" element={<Generate generators={generators} />} />
@@ -58,6 +70,6 @@ export default function App() {
                 <Route path="*" element={<h1>Page not found</h1>} />
             </Routes>
         </BrowserRouter>
-    </div>
+    </React.Fragment>
     );
 }

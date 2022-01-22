@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
 import { Link } from "react-router-dom";
 import * as _ from "lodash/fp";
+import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
@@ -35,28 +38,36 @@ function Home(props) {
                 kind: "import",
                 value: merged,
             });
+            setImportJson("");
         }
     };
 
-    return (
-    <div>
-        <h1>Generate Anything</h1>
+    return (<main className="container">
+        <p>Info about the site</p>
+
+        <h2>Import Generators</h2>
 
         <form onSubmit={handleSubmit}>
             <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />
             {errorMsgComponent}
-            <input type="submit" value="Merge imported JSON" />
+            <div>
+                <input type="submit" value="Merge imported JSON" />
+            </div>
         </form>
 
-        <button type="button" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</button>
+        <h2>Export Generators as JSON</h2>
+
+        <Button variant="primary" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
+
+        <h2>Generators</h2>
 
         {jsonElem}
 
         <ol>
             {Object.keys(props.generators).map(list)}
         </ol>
-    </div>
-    );
+
+    </main>);
 }
 
 export default Home;
