@@ -5,6 +5,7 @@ import CreateGeneratorComponent from "./CreateGeneratorComponent";
 import EditGeneratorComponent from "./EditGeneratorComponent";
 import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
+import GeneratorPage from "./GeneratorPage";
 import About from "./About";
 import Generate, { SetSeed } from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -66,6 +67,7 @@ export default function App() {
 
                 <Route path="/generator/run/:name" element={<SetSeed />} />
                 <Route path="/generator/run/:name/:seed" element={<Generate generators={generators} />} />
+                <Route path="/generator/:name" element={<GeneratorPage generators={generators} setGenerators={setGenerators} />} />
 
                 <Route path="*" element={<h1>Page not found</h1>} />
             </Routes>

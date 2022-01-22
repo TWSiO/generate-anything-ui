@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
-import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import * as _ from "lodash/fp";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
@@ -21,9 +22,7 @@ function Home(props) {
         jsonElem = <code>{jsonString}</code>
     }
 
-    const list = (name, index) => <li key={index}>
-        {name} <Link to={`/generator/edit/${name}`}>Edit</Link> <Link to={`/generator/run/${name}`}>Generate</Link>
-        </li>;
+    const list = (name, index) => <LinkContainer to={`/generator/${name}`}><ListGroup.Item action key={index}>{name}</ListGroup.Item></LinkContainer>;
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -51,7 +50,7 @@ function Home(props) {
             <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />
             {errorMsgComponent}
             <div>
-                <input type="submit" value="Merge imported JSON" />
+                <Button as="input" type="submit" value="Merge imported JSON" />
             </div>
         </form>
 
@@ -63,9 +62,9 @@ function Home(props) {
 
         {jsonElem}
 
-        <ol>
+        <ListGroup>
             {Object.keys(props.generators).map(list)}
-        </ol>
+        </ListGroup>
 
     </main>);
 }

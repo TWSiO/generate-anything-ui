@@ -12,14 +12,11 @@ export default function CreateTableComponent(props) {
     let initName = useParams()?.name;
     let initValues = [];
 
-    console.log(initName);
     if (initName !== undefined) {
         initValues = props.generators[initName].table;
     } else {
         initName = "";
     }
-    console.log(initName);
-    console.log(initValues);
 
     const [name, setName] = useState(initName);
     const [tableError, setTableError] = useState("");
