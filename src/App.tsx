@@ -1,8 +1,7 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import Header from "./Header";
 import Home from "./Home";
 import CreateGeneratorComponent from "./CreateGeneratorComponent";
-import EditGeneratorComponent from "./EditGeneratorComponent";
 import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
 import GeneratorPage from "./GeneratorPage";
@@ -33,6 +32,7 @@ function keyValueReducer(state, action) {
 
 export default function App() {
     const [generators, setGenerators] = useReducer(keyValueReducer, {});
+
     return (
     <React.Fragment>
         <BrowserRouter>
@@ -58,15 +58,8 @@ export default function App() {
 
                 </Route>
 
-                <Route
-                    path="/generator/edit/:name"
-                    element={
-                        <EditGeneratorComponent generators={generators} setGenerators={setGenerators}
-                        />}
-                    />
-
                 <Route path="/generator/run/:name" element={<SetSeed />} />
-                <Route path="/generator/run/:name/:seed" element={<Generate generators={generators} />} />
+                <Route path="/generator/:name/run/:seed" element={<Generate generators={generators} />} />
                 <Route path="/generator/:name" element={<GeneratorPage generators={generators} setGenerators={setGenerators} />} />
 
                 <Route path="*" element={<h1>Page not found</h1>} />

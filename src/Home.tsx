@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
+import Card from "react-bootstrap/Card";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
@@ -19,7 +20,11 @@ function Home(props) {
     
     let jsonElem = "";
     if (jsonString !== "") {
-        jsonElem = <code>{jsonString}</code>
+        jsonElem = (
+            <Card bg="Secondary" body>
+                <code>{jsonString}</code>
+            </Card>
+        );
     }
 
     const list = (name, index) => <LinkContainer to={`/generator/${name}`}><ListGroup.Item action key={index}>{name}</ListGroup.Item></LinkContainer>;
@@ -56,11 +61,19 @@ function Home(props) {
 
         <h2>Export Generators as JSON</h2>
 
-        <Button variant="primary" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
+        <Row>
+            <Col xs={4}>
+                <Button variant="primary" id="export-button" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
+            </Col>
+        </Row>
+
+        <Row>
+            <Col>
+                {jsonElem}
+            </Col>
+        </Row>
 
         <h2>Generators</h2>
-
-        {jsonElem}
 
         <ListGroup>
             {Object.keys(props.generators).map(list)}

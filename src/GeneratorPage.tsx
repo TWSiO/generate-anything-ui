@@ -4,6 +4,15 @@ import EditGeneratorComponent from "./EditGeneratorComponent";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form";
+
+function NotFound() {
+    return (<main className="container">
+                <h1>Generator Not Found</h1>
+                <p>Generator wasn't found for this URL. Generators disappear when the page is refreshed so the generator may have disappeared. Make sure to frequently export generators to save them.</p>
+            </main>);
+}
 
 export default function GeneratorPage(props) {
 
@@ -12,9 +21,12 @@ export default function GeneratorPage(props) {
     const initName = useParams().name;
     const navigate = useNavigate();
 
-    console.log(initName);
     const generator = props.generators[initName];
     console.log(generator);
+
+    if (generator === undefined) {
+        return <NotFound />;
+    }
 
     const handleRun = event => {
         event.preventDefault();
@@ -27,26 +39,24 @@ export default function GeneratorPage(props) {
 
         <h2>Run Generator</h2>
 
-        <form onSubmit={handleRun}>
-            <label>
-                Seed:
+        <Form onSubmit={handleRun}>
+            <Form.Group>
+                <Form.Label>Seed</Form.Label>
 
-                <input
-                type="text"
-                value={seed}
-                onChange={event => setSeed(event.target.value)}
-                />
+                <InputGroup>
+                    <Button onClick={() => setSeed(String(Math.random()))}>Random Seed</Button>
+                    <Form.Control
+                    type="text"
+                    placeholder="seed"
+                    value={seed}
+                    onChange={event => setSeed(event.target.value)}
+                    />
 
-                <Button onClick={() => setSeed(String(Math.random()))}>Random Seed</Button>
 
-            </label>
-
-            <Row>
-                <Col>
                     <Button as="input" type="submit" value="Run" />
-                </Col>
-            </Row>
-        </form>
+                </InputGroup>
+            </Form.Group>
+        </Form>
 
         <h2>Edit</h2>
         <EditGeneratorComponent generators={props.generators} setGenerators={props.setGenerators} />

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import CreateTableComponent from "./CreateTableComponent";
-import CreateEntityComponent from "./CreateEntityComponent";
+import { EditEntityComponent } from "./CreateEntityComponent";
 
 export default function EditGeneratorComponent(props) {
     const initName = useParams().name;
@@ -11,7 +11,7 @@ export default function EditGeneratorComponent(props) {
         case "table":
             return <CreateTableComponent {...props} />;
         case "entity":
-            return <CreateEntityComponent {...props} />;
+            return <EditEntityComponent {...props} />;
         default:
             throw new Error("Unrecognized generator kind.");
     }

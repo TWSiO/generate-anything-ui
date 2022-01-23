@@ -2,8 +2,13 @@ import React, { useState, useReducer } from "react";
 import * as _ from "lodash/fp";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField, ValueField } from "./Fields";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate  } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
+import Form from "react-bootstrap/Form";
 
 export default function CreateTableComponent(props) {
 
@@ -38,6 +43,8 @@ export default function CreateTableComponent(props) {
 
     const [values, valuesDispatch] = useReducer(reducer, initValues);
 
+    const navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -47,10 +54,11 @@ export default function CreateTableComponent(props) {
             setTableError("Can't have an empty generator field.");
         } else {
             setTableError("");
-        }
+            const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
+            props.setGenerators({kind: "set", key: name, value: newTable});
 
-        const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
-        props.setGenerators({kind: "set", key: name, value: newTable});
+            navigate(`/generator/${name}`)
+        }
     };
 
     const setValue = index => value => {
@@ -60,9 +68,9 @@ export default function CreateTableComponent(props) {
 
     const valueFields = values.map((value, index) => {
         if (typeof value === "string") {
-            return <li key={index}><ValueField value={value} setValue={setValue(index)} /></li>
+            return <ListGroup.Item key={index}><ValueField value={value} setValue={setValue(index)} /></ListGroup.Item>
         } else {
-            return <li key={index}><GeneratorField value={value} generatorSetter={setValue(index)} generators={props.generators} /></li>
+            return <ListGroup.Item key={index}><GeneratorField value={value} generatorSetter={setValue(index)} generators={props.generators} /></ListGroup.Item>
         }
     });
 
@@ -70,22 +78,34 @@ export default function CreateTableComponent(props) {
         <main className="create-table container">
             <h2>Creating a table</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Name:
-                        <input type="text" value={name} onChange={setEventValue(setName)} />
-                    </label>
-                </div>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <Form.Group as={Col} xs={3}>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
+                    </Form.Group>
+                </Row>
 
-                <ol>
-                    {valueFields}
-                </ol>
+                <Row>
+                    <ListGroup as={Col} xs={5}>
+                        {valueFields}
+                    </ListGroup>
+                </Row>
 
-                <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: ""})}>New Value</Button>
-                <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: emptyGenerator})}>New Generator Value</Button>
-                <Button as="input" type="submit" value="Save" />
-            </form>
+                <Row>
+                    <Col xs={4}>
+                        <ButtonGroup>
+                            <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: ""})}>New Static Value</Button>
+                            <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: emptyGenerator})}>New Generator Value</Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={2}>
+                        <Button as="input" type="submit" value="Create" />
+                    </Col>
+                </Row>
+            </Form>
         </main>
     );
 }

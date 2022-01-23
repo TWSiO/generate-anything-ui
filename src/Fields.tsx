@@ -1,4 +1,5 @@
 import * as _ from "lodash/fp";
+import Form from "react-bootstrap/Form";
 
 export const emptyGenerator: unique symbol = Symbol();
 
@@ -34,7 +35,8 @@ export function GeneratorField(props) {
 
     console.log(props.value);
 
-    return <select value={value} onChange={selectGenerator}>{options}</select>;
+    //return <select value={value} onChange={selectGenerator}>{options}</select>;
+    return <Form.Select value={value} onChange={selectGenerator}>{options}</Form.Select>;
 }
 
 // Display, get value, set value.
@@ -44,5 +46,6 @@ export function ValueField(props) {
     const temp = event => {
         props.setValue(event.target.value)
     };
-    return <input type="text" value={props.value} onChange={temp} />;
+
+    return <Form.Control type="text" value={props.value} onChange={temp} />;
 }

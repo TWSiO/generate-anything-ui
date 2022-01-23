@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { newRoot, root } from "generate-anything";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import Card from "react-bootstrap/Card";
 
 // May want to keep track of generator + seed combinations. More a convenience thing I suppose.
 
@@ -13,7 +16,7 @@ export function SetSeed(props) {
     const handleSubmit = event => {
         event.preventDefault();
 
-        navigate(`/generator/run/${genName}/${seed}`);
+        navigate(`/generator/${genName}/run/${seed}`);
     };
 
     return (
@@ -43,54 +46,70 @@ function GeneratorValue(props) {
     const handleClick = event => props.setCurrent(props.value);
 
     return (
-        <span>
-         {props.value.generator.name}
-         <button type="button" onClick={handleClick}>Go to generator</button>
-        </span>
+        <Card>
+            <Card.Header>{props.header}</Card.Header>
+            <Card.Body>
+                <Card.Text>{props.value.generator.name}</Card.Text>
+                <Button type="button" onClick={handleClick}>Go to generator</Button>
+            </Card.Body>
+        </Card>
     );
+}
+
+function TableValue(props) {
+    const val = props.value.get();
+    let displayVal;
+
+    switch (val.kind) {
+        case "scalar":
+            displayVal = (<Card bg={"secondary"} text={"light"}>
+                        <Card.Header>Value</Card.Header>
+                        <Card.Body>
+                            <Card.Text>{val.leaf}</Card.Text>
+                        </Card.Body>
+                    </Card>);
+            break;
+        default:
+            displayVal = <GeneratorValue header={"Value"} value={val} setCurrent={props.setCurrent} />;
+    }
+
+    return displayVal;
+}
+
+function EntityValue(props) {
+    const vals = props.value.getAll();
+    const createGenVal = (key, i) => <ListGroup.Item key={i}><GeneratorValue header={key} value={vals[key]} setCurrent={props.setCurrent} /></ListGroup.Item>;
+    const attributes = Object.keys(vals).map(createGenVal);
+
+    return <ListGroup>{attributes}</ListGroup>;
 }
 
 function Value(props) {
     switch(props.value.kind) {
         case "table":
-            const val = props.value.get();
-            let displayVal;
-
-            switch (val.kind) {
-                case "scalar":
-                    displayVal = val.leaf;
-                    break;
-                default:
-                    displayVal = <GeneratorValue value={val} setCurrent={props.setCurrent} />
-            }
-
-            return (
-                <div>
-                    <h3>Table</h3>
-                    <div>Value: {displayVal}</div>
-                </div>
-            );
+            return <TableValue {...props} />
         case "entity":
-            const vals = props.value.getAll();
-            const createGenVal = (key, i) => <li key={i}>{key}: <GeneratorValue value={vals[key]} setCurrent={props.setCurrent} /></li>;
-            const attributes = Object.keys(vals).map(createGenVal);
-
-            return (
-                <div>
-                    <h3>Entity</h3>
-                    <ol>{attributes}</ol>
-                </div>
-            );
-
+            return <EntityValue {...props} />
         default:
             throw new Error("Unrecognized value kind.");
     }
+}
+
+function NotFound() {
+    return (<main className="container">
+                <h1>Generator Not Found</h1>
+                <p>Generator wasn't found for this URL. Generators disappear when the page is refreshed so the generator may have disappeared. Make sure to frequently export generators to save them.</p>
+            </main>);
 }
 
 export default function Generate(props) {
     const genName = useParams().name;
     const seed = useParams().seed;
     const generator = props.generators[genName];
+
+    if (generator === undefined) {
+        return <NotFound />;
+    }
 
     const rootVal = newRoot(seed, generator);
 
@@ -99,17 +118,14 @@ export default function Generate(props) {
     let goToParentButton = "";
 
     if (current.parent !== root) {
-        goToParentButton = <button type="button" onClick={() => setCurrent(current.parent)}>Go to Parent</button>
+        goToParentButton = <Button onClick={() => setCurrent(current.parent)}>Go to Parent</Button>
     }
 
-    return (
-        <div>
-            <h1>Value Tree</h1>
-            <h2>{current.generator.name}</h2>
+    return (<main className="container">
+            <h1>{current.generator.name}</h1>
 
             {goToParentButton}
 
             <Value value={current} setCurrent={setCurrent}/>
-        </div>
-    );
+        </main>);
 }

@@ -2,31 +2,40 @@ import React, { useState, useReducer } from "react";
 import { GeneratorRepr } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
 import { hasDuplicates } from "./util";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import * as _ from "lodash/fp";
 import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
 
 function Attribute(props) {
-    return (<li key={props.index}>
-                <label>
-                    Attribute Name:
-                    <input type="text" value={props.name} onChange={setEventValue(props.setName)} />
-                </label>
+    return (<ListGroup.Item variant="primary" key={props.index}>
+                <Row>
+                    <Form.Group as={Col}>
+                        <Form.Label>Attribute Name</Form.Label>
+                        <Form.Control type="text" value={props.name} onChange={setEventValue(props.setName)} />
+                    </Form.Group>
 
-                <GeneratorField
-                value={props.value}
-                generatorSetter={props.setValue}
-                generators={props.generators}
-                />
-            </li>);
+                    <Form.Group as={Col}>
+                        <Form.Label>Attribute Generator</Form.Label>
+                        <GeneratorField
+                        value={props.value}
+                        generatorSetter={props.setValue}
+                        generators={props.generators}
+                        />
+                    </Form.Group>
+                </Row>
+            </ListGroup.Item>);
 }
 
 const getNames = _.map(_.flip(_.get)("name"))
 const hasDuplicateNames = _.compose([hasDuplicates, getNames]);
 
-function uncurriedSubmit(attributes, name, initName, generators, setErrorMsg, setGenerators, event) {
+function uncurriedSubmit(navigate, attributes, name, initName, generators, setErrorMsg, setGenerators, event) {
     event.preventDefault();
 
     if (hasDuplicateNames(attributes)) {
@@ -52,14 +61,16 @@ function uncurriedSubmit(attributes, name, initName, generators, setErrorMsg, se
         }
         setGenerators({kind: "set", key: name, value: setEntity});
         setErrorMsg("");
+        navigate(`/generator/${name}`);
     }
 }
 
 const submit = _.curry(uncurriedSubmit);
 
-export default function CreateEntityComponent(props) {
-
+export function EditEntityComponent(props) {
     const [errorMsg, setErrorMsg] = useState("");
+
+    const navigate = useNavigate();
 
     let errorMsgComponent = null;
     if (errorMsg !== "") {
@@ -110,36 +121,42 @@ export default function CreateEntityComponent(props) {
 
     const attributeFields = attributes
         .map((attribute, index) =>
-            <Attribute
+            <Row><Attribute
             index={index}
             name={attribute.name}
             value={attribute.value}
             generators={props.generators}
             setValue={setValue(index)}
             setName={setAttributeName(index)}
-            />
+            /></Row>
             );
 
-    return (
-        <main className="create-entity container">
-            <h2>Creating an Entity</h2>
+    return (<React.Fragment>
             {errorMsgComponent}
-            <form onSubmit={submit(attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
-                <div>
-                    <label>
-                        Name:
-                        <input type="text" value={name} onChange={setEventValue(setName)} />
-                    </label>
-                </div>
+            <Form onSubmit={submit(navigate, attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
+                <Row>
+                    <Form.Group as={Col} xs={3}>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
+                    </Form.Group>
+                </Row>
 
-                <ol>
+                <ListGroup>
                     {attributeFields}
-                </ol>
+                </ListGroup>
 
                 <Button onClick={addAttribute}>Add Attribute</Button>
 
-                <Button as="input" type="submit" value="Submit" />
-            </form>
+                <Button as="input" type="submit" value="Create" />
+            </Form>
+    </React.Fragment>);
+}
+
+export default function CreateEntityComponent(props) {
+        return (<main className="create-entity container">
+            <h2>Creating an Entity</h2>
+            <p>About entity components</p>
+            <EditEntityComponent {...props} />
         </main>
-    );
+        );
 }
