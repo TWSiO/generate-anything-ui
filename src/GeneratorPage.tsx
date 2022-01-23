@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 import EditGeneratorComponent from "./EditGeneratorComponent";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import InputGroup from "react-bootstrap/InputGroup";
-import Form from "react-bootstrap/Form";
+import { SetSeed } from "./Generate";
 
 function NotFound() {
     return (<main className="container">
@@ -15,48 +11,20 @@ function NotFound() {
 }
 
 export default function GeneratorPage(props) {
-
-    const [seed, setSeed] = useState("");
-
     const initName = useParams().name;
-    const navigate = useNavigate();
 
     const generator = props.generators[initName];
-    console.log(generator);
 
     if (generator === undefined) {
         return <NotFound />;
     }
-
-    const handleRun = event => {
-        event.preventDefault();
-
-        navigate(`/generator/run/${initName}/${seed}`);
-    };
 
     return (<main className="container">
         <h1>{generator.name}</h1>
 
         <h2>Run Generator</h2>
 
-        <Form onSubmit={handleRun}>
-            <Form.Group>
-                <Form.Label>Seed</Form.Label>
-
-                <InputGroup>
-                    <Button onClick={() => setSeed(String(Math.random()))}>Random Seed</Button>
-                    <Form.Control
-                    type="text"
-                    placeholder="seed"
-                    value={seed}
-                    onChange={event => setSeed(event.target.value)}
-                    />
-
-
-                    <Button as="input" type="submit" value="Run" />
-                </InputGroup>
-            </Form.Group>
-        </Form>
+        <SetSeed name={initName} />
 
         <h2>Edit</h2>
         <EditGeneratorComponent generators={props.generators} setGenerators={props.setGenerators} />

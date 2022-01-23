@@ -4,41 +4,39 @@ import { newRoot, root } from "generate-anything";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
-
-// May want to keep track of generator + seed combinations. More a convenience thing I suppose.
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 export function SetSeed(props) {
     const navigate = useNavigate();
-    const genName = useParams().name;
 
     const [seed, setSeed] = useState("");
 
-    const handleSubmit = event => {
+    const handleRun = event => {
         event.preventDefault();
 
-        navigate(`/generator/${genName}/run/${seed}`);
+        navigate(`/generator/${props.name}/run/${seed}`);
     };
 
     return (
-        <div>
-            <h1>Generate</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Seed:
+        <Form onSubmit={handleRun}>
+            <Form.Group>
+                <Form.Label>Seed</Form.Label>
 
-                    <input
+                <InputGroup>
+                    <Button onClick={() => setSeed(String(Math.random()))}>Random Seed</Button>
+                    <Form.Control
                     type="text"
+                    placeholder="seed"
                     value={seed}
                     onChange={event => setSeed(event.target.value)}
                     />
 
-                    <button type="button" onClick={event => setSeed(String(Math.random()))}>Random Seed</button>
 
-                </label>
-
-                <input type="submit" value="Generate" />
-            </form>
-        </div>
+                    <Button as="input" type="submit" value="Run" />
+                </InputGroup>
+            </Form.Group>
+        </Form>
     );
 }
 
