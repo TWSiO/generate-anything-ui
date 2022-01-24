@@ -14,7 +14,7 @@ export default function Header() {
                 <LinkContainer to="/"><Navbar.Brand>Generate Anything</Navbar.Brand></LinkContainer>
                 <Nav>
                     <LinkContainer to="/about"><Nav.Link>About</Nav.Link></LinkContainer>
-                    <LinkContainer to="/generator/create"><Nav.Link>Create generator component</Nav.Link></LinkContainer>
+                    <LinkContainer to="/generator/create"><Nav.Link>Create generator</Nav.Link></LinkContainer>
                 </Nav>
             </Container>
         </Navbar>

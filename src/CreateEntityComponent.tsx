@@ -166,7 +166,7 @@ export function EditEntityComponent(props) {
 export default function CreateEntityComponent(props) {
         return (<main className="create-entity container">
             <h2>Creating an Entity</h2>
-            <p>About entity components</p>
+            <p>About entity</p>
             <EditEntityComponent {...props} />
         </main>
         );

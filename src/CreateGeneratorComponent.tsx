@@ -10,7 +10,7 @@ import Col from "react-bootstrap/Col";
 export default function CreateGeneratorComponent(props) {
     
     return (<Container>
-    <h1>Create generator component</h1>
+    <h1>Create generator</h1>
 
     <Nav className="mb-2" variant="pills">
         <Nav.Item>
@@ -27,7 +27,7 @@ export default function CreateGeneratorComponent(props) {
     </Nav>
 
     <Row><Col xs={3}>
-        <Card body>Create a new generator component</Card>
+        <Card body>Create a new generator</Card>
     </Col></Row>
 
     <Outlet />
