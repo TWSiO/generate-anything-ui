@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import * as _ from "lodash/fp";
 import { useParams, useNavigate } from "react-router-dom";
 import { newRoot, root } from "generate-anything";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export function SetSeed(props) {
     const navigate = useNavigate();
@@ -45,7 +49,7 @@ function GeneratorValue(props) {
 
     return (
         <Card>
-            <Card.Header>{props.header}</Card.Header>
+            <Card.Header>{props.value.generator.name}</Card.Header>
             <Card.Body>
                 <Card.Text>{props.value.generator.name}</Card.Text>
                 <Button type="button" onClick={handleClick}>Go to generator</Button>
@@ -54,32 +58,74 @@ function GeneratorValue(props) {
     );
 }
 
+function ScalarValue(props) {
+    return (<Card bg={"secondary"} text={"light"}>
+                <Card.Header>{props.name}</Card.Header>
+                <Card.Body>
+                    <Card.Text>{props.value}</Card.Text>
+                </Card.Body>
+            </Card>);
+}
+
 function TableValue(props) {
     const val = props.value.get();
     let displayVal;
 
     switch (val.kind) {
         case "scalar":
-            displayVal = (<Card bg={"secondary"} text={"light"}>
-                        <Card.Header>Value</Card.Header>
-                        <Card.Body>
-                            <Card.Text>{val.leaf}</Card.Text>
-                        </Card.Body>
-                    </Card>);
+            displayVal = <ScalarValue name={props.value.generator.name} value={val.leaf} />;
             break;
         default:
-            displayVal = <GeneratorValue header={"Value"} value={val} setCurrent={props.setCurrent} />;
+            displayVal = <GeneratorValue value={val} setCurrent={props.setCurrent} />;
     }
 
     return displayVal;
 }
 
-function EntityValue(props) {
+function OneLevel(props) {
     const vals = props.value.getAll();
-    const createGenVal = (key, i) => <ListGroup.Item key={i}><GeneratorValue header={key} value={vals[key]} setCurrent={props.setCurrent} /></ListGroup.Item>;
+    const createGenVal = (key, i) => (
+        <ListGroup.Item key={i}>
+            <GeneratorValue header={key} value={vals[key]} setCurrent={props.setCurrent} />
+        </ListGroup.Item>
+    );
     const attributes = Object.keys(vals).map(createGenVal);
 
     return <ListGroup>{attributes}</ListGroup>;
+}
+
+function uncurriedAttributeDisplay(vals, setCurrent, name) {
+    const val = vals[name];
+    let displayVal;
+
+    switch(val.kind) {
+        case "scalar":
+            displayVal = <ScalarValue name={"Value"} value={val.leaf} />
+                break;
+        case "table":
+            displayVal = <TableValue value={val} setCurrent={setCurrent}/>
+                break;
+        case "entity":
+            displayVal = <GeneratorValue value={val} setCurrent={setCurrent} />;
+            break;
+    }
+
+    const attrDisplayVal = (<Col><Card>
+            <Card.Header>{name}</Card.Header>
+            <Card.Body>{displayVal}</Card.Body>
+            </Card></Col>);
+
+    return attrDisplayVal;
+}
+
+const attributeDisplay = _.curry(uncurriedAttributeDisplay);
+
+function EntityValue(props) {
+    const vals = props.value.getAll();
+
+    const attributes = Object.keys(vals).map(attributeDisplay(vals, props.setCurrent));
+
+    return <CardGroup><Row>{attributes}</Row></CardGroup>;
 }
 
 function Value(props) {
