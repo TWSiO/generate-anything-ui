@@ -27,7 +27,6 @@ function generatorToJson(generator) {
 
             return clone;
         case "entity":
-            console.log(clone.attributes);
             clone.attributes = _.mapValues(referencedGeneratorToJson)(clone.attributes);
             return clone;
         default:

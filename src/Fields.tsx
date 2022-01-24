@@ -3,7 +3,6 @@ import Form from "react-bootstrap/Form";
 
 export const emptyGenerator: unique symbol = Symbol();
 
-// Probably could be reusable
 export function GeneratorField(props) {
 
     const options = Object.keys(props.generators)
@@ -33,15 +32,9 @@ export function GeneratorField(props) {
         value = props.value.name;
     }
 
-    console.log(props.value);
-
-    //return <select value={value} onChange={selectGenerator}>{options}</select>;
     return <Form.Select value={value} onChange={selectGenerator}>{options}</Form.Select>;
 }
 
-// Display, get value, set value.
-// New fields
-// String and generator values
 export function ValueField(props) {
     const temp = event => {
         props.setValue(event.target.value)

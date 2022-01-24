@@ -147,7 +147,7 @@ export function EditEntityComponent(props) {
 
                 <Button onClick={addAttribute}>Add Attribute</Button>
 
-                <Button as="input" type="submit" value="Create" />
+                <Button as="input" type="submit" value="Save" />
             </Form>
     </React.Fragment>);
 }

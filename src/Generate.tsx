@@ -47,11 +47,17 @@ export function SetSeed(props) {
 function GeneratorValue(props) {
     const handleClick = event => props.setCurrent(props.value);
 
+    let header;
+
+    if (props.header !== undefined) {
+        header = <Card.Header>{props.header}</Card.Header>
+    }
+
     return (
         <Card>
-            <Card.Header>{props.value.generator.name}</Card.Header>
+            {header}
             <Card.Body>
-                <Card.Text>{props.value.generator.name}</Card.Text>
+                <Card.Title>{props.value.generator.name}</Card.Title>
                 <Button type="button" onClick={handleClick}>Go to generator</Button>
             </Card.Body>
         </Card>
@@ -59,9 +65,16 @@ function GeneratorValue(props) {
 }
 
 function ScalarValue(props) {
+    let header;
+
+    if (props.header !== undefined) {
+        header = <Card.Header>{props.header}</Card.Header>
+    }
+
     return (<Card bg={"secondary"} text={"light"}>
-                <Card.Header>{props.name}</Card.Header>
+                {header}
                 <Card.Body>
+                    <Card.Title>{props.name}</Card.Title>
                     <Card.Text>{props.value}</Card.Text>
                 </Card.Body>
             </Card>);
@@ -101,10 +114,19 @@ function uncurriedAttributeDisplay(vals, setCurrent, name) {
     switch(val.kind) {
         case "scalar":
             displayVal = <ScalarValue name={"Value"} value={val.leaf} />
-                break;
+            break;
         case "table":
-            displayVal = <TableValue value={val} setCurrent={setCurrent}/>
-                break;
+            const tableVal = val.get();
+
+            switch(tableVal.kind) {
+                case "scalar":
+                    displayVal = <ScalarValue name={val.generator.name} value={tableVal.leaf} />
+                    break;
+                default:
+                    displayVal = <GeneratorValue header={val.generator.name} value={tableVal} setCurrent={setCurrent} />;
+                    break;
+            }
+            break;
         case "entity":
             displayVal = <GeneratorValue value={val} setCurrent={setCurrent} />;
             break;

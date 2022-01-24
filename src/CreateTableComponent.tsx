@@ -102,7 +102,7 @@ export default function CreateTableComponent(props) {
                 </Row>
                 <Row>
                     <Col xs={2}>
-                        <Button as="input" type="submit" value="Create" />
+                        <Button as="input" type="submit" value="Save" />
                     </Col>
                 </Row>
             </Form>
