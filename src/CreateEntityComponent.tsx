@@ -134,7 +134,7 @@ export function EditEntityComponent(props) {
     return (<React.Fragment>
             {errorMsgComponent}
             <Form onSubmit={submit(navigate, attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
-                <Row>
+                <Row className="mb-2">
                     <Form.Group as={Col} xs={3}>
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
@@ -145,9 +145,11 @@ export function EditEntityComponent(props) {
                     {attributeFields}
                 </ListGroup>
 
-                <Button onClick={addAttribute}>Add Attribute</Button>
+                <Button className="mb-2" onClick={addAttribute}>Add Attribute</Button>
 
-                <Button as="input" type="submit" value="Save" />
+                <Row><Col>
+                    <Button as="input" type="submit" value="Save" />
+                </Col></Row>
             </Form>
     </React.Fragment>);
 }

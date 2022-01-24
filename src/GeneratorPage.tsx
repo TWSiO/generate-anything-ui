@@ -24,6 +24,8 @@ export default function GeneratorPage(props) {
 
         <h2>Run Generator</h2>
 
+        <p>Probably note to save seed here.</p>
+
         <SetSeed name={initName} />
 
         <h2>Edit</h2>

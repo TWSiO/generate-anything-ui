@@ -10,7 +10,7 @@ import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 
-export default function CreateTableComponent(props) {
+export function EditTableComponent(props) {
 
     const setEventValue = (setter) => (event) => setter(event.target.value);
 
@@ -75,24 +75,21 @@ export default function CreateTableComponent(props) {
     });
 
     return (
-        <main className="create-table container">
-            <h2>Creating a table</h2>
-
             <Form onSubmit={handleSubmit}>
-                <Row>
+                <Row className="mb-2">
                     <Form.Group as={Col} xs={3}>
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
                     </Form.Group>
                 </Row>
 
-                <Row>
+                <Row className="mb-2">
                     <ListGroup as={Col} xs={5}>
                         {valueFields}
                     </ListGroup>
                 </Row>
 
-                <Row>
+                <Row className="mb-2">
                     <Col xs={4}>
                         <ButtonGroup>
                             <Button variant="primary" onClick={() => valuesDispatch({kind: "add", value: ""})}>New Static Value</Button>
@@ -106,6 +103,18 @@ export default function CreateTableComponent(props) {
                     </Col>
                 </Row>
             </Form>
+    );
+}
+
+export default function CreateTableComponent(props) {
+    return (
+        <main className="create-table container">
+            <h2>Creating a table</h2>
+
+            <p>Create a generator that generates a random value from a table.</p>
+
+            <EditTableComponent {...props} />
+
         </main>
     );
 }

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import CreateTableComponent from "./CreateTableComponent";
+import { EditTableComponent } from "./CreateTableComponent";
 import { EditEntityComponent } from "./CreateEntityComponent";
 
 export default function EditGeneratorComponent(props) {
@@ -9,7 +9,7 @@ export default function EditGeneratorComponent(props) {
 
     switch(gen.kind) {
         case "table":
-            return <CreateTableComponent {...props} />;
+            return <EditTableComponent {...props} />;
         case "entity":
             return <EditEntityComponent {...props} />;
         default:

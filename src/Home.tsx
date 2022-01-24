@@ -52,7 +52,7 @@ function Home(props) {
         <h2>Import Generators</h2>
 
         <form onSubmit={handleSubmit}>
-            <textarea value={importJson} onChange={event => setImportJson(event.target.value)} />
+            <textarea className="mb-2" value={importJson} onChange={event => setImportJson(event.target.value)} />
             {errorMsgComponent}
             <div>
                 <Button as="input" type="submit" value="Merge imported JSON" />
@@ -63,7 +63,7 @@ function Home(props) {
 
         <Row>
             <Col xs={4}>
-                <Button variant="primary" id="export-button" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
+                <Button variant="primary" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
             </Col>
         </Row>
 
