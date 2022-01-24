@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
+import Alert from "react-bootstrap/Alert";
 
 const setEventValue = (setter) => (event) => setter(event.target.value);
 
@@ -41,7 +42,7 @@ function uncurriedSubmit(navigate, attributes, name, initName, generators, setEr
     if (hasDuplicateNames(attributes)) {
         setErrorMsg("Can't have attributes with the same name");
     } else if (name === "") {
-        setErrorMsg("Generator name can't be blank");
+        setErrorMsg("Generator name cannot be blank");
     } else {
         const reducer = (accum, val) => {
             accum[val.name] = val.value;
@@ -74,7 +75,7 @@ export function EditEntityComponent(props) {
 
     let errorMsgComponent = null;
     if (errorMsg !== "") {
-        errorMsgComponent = (<p>{errorMsg}</p>);
+        errorMsgComponent = (<Alert variant={"danger"}>{errorMsg}</Alert>);
     }
 
     let initAttributes = [];
@@ -108,6 +109,19 @@ export function EditEntityComponent(props) {
 
     const [attributes, attributesDispatch] = useReducer(reducer, initAttributes);
 
+    let nameField = <h3>{initName}</h3>;
+
+    if (initName === "") {
+        nameField = (
+                <Row className="mb-2">
+                    <Form.Group as={Col} xs={3}>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
+                    </Form.Group>
+                </Row>
+                );
+    }
+
     const addAttribute = () => {
         attributesDispatch({
         kind: "add",
@@ -121,27 +135,22 @@ export function EditEntityComponent(props) {
 
     const attributeFields = attributes
         .map((attribute, index) =>
-            <Row><Attribute
+            <Attribute
             index={index}
             name={attribute.name}
             value={attribute.value}
             generators={props.generators}
             setValue={setValue(index)}
             setName={setAttributeName(index)}
-            /></Row>
+            />
             );
 
     return (<React.Fragment>
             {errorMsgComponent}
             <Form onSubmit={submit(navigate, attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
-                <Row className="mb-2">
-                    <Form.Group as={Col} xs={3}>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
-                    </Form.Group>
-                </Row>
+                {nameField}
 
-                <ListGroup>
+                <ListGroup className="mb-2">
                     {attributeFields}
                 </ListGroup>
 

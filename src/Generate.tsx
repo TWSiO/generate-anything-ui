@@ -28,7 +28,7 @@ export function SetSeed(props) {
                 <Form.Label>Seed</Form.Label>
 
                 <InputGroup>
-                    <Button onClick={() => setSeed(String(Math.random()))}>Random Seed</Button>
+                    <Button onClick={() => setSeed(String(Math.random()).slice(2))}>Random Seed</Button>
                     <Form.Control
                     type="text"
                     placeholder="seed"

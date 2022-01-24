@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 
 export function EditTableComponent(props) {
 
@@ -45,15 +46,30 @@ export function EditTableComponent(props) {
 
     const navigate = useNavigate();
 
+    let nameField = <h3>{initName}</h3>;
+
+    if (initName === "") {
+        nameField = (
+                <Row className="mb-2">
+                    <Form.Group as={Col} xs={3}>
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
+                    </Form.Group>
+                </Row>
+                );
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
         // Validation
         // TODO Check and make sure there's at least one value in the table as well.
         if (values.includes(emptyGenerator))) {
-            setTableError("Can't have an empty generator field.");
+            setTableError(<Alert variant={"danger"}>Can't have an empty generator field</Alert>);
+        } else if (name === "") {
+            setTableError(<Alert variant={"danger"}>Generator name cannot be blank</Alert>);
         } else {
-            setTableError("");
+            setTableError(null);
             const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
             props.setGenerators({kind: "set", key: name, value: newTable});
 
@@ -76,12 +92,9 @@ export function EditTableComponent(props) {
 
     return (
             <Form onSubmit={handleSubmit}>
-                <Row className="mb-2">
-                    <Form.Group as={Col} xs={3}>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
-                    </Form.Group>
-                </Row>
+                {tableError}
+
+                {nameField}
 
                 <Row className="mb-2">
                     <ListGroup as={Col} xs={5}>
