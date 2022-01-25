@@ -17,7 +17,7 @@ function Home(props) {
 
     let errorMsgComponent = null;
     if (errorMsg !== "") {
-        errorMsgComponent = (<p>{errorMsg}</p>);
+        errorMsgComponent = (<Alert variant={"danger"}>{errorMsg}</Alert>);
     }
     
     let jsonElem = "";
@@ -34,7 +34,12 @@ function Home(props) {
     const handleSubmit = event => {
         event.preventDefault();
         
-        const merged = mergeGeneratorSets(props.generators, jsonToGenerators(importJson));
+        try {
+            const merged = mergeGeneratorSets(props.generators, jsonToGenerators(importJson));
+        } catch (e) {
+            setErrorMsg("Invalid generator JSON");
+            return;
+        }
 
         if (merged === duplicateNames) {
             setErrorMsg("Imported JSON has a generator with the same name as an existing generator.");
@@ -45,6 +50,14 @@ function Home(props) {
                 value: merged,
             });
             setImportJson("");
+        }
+    };
+
+    const handleExportClick = () => {
+        try {
+            setJsonString(generatorsToJson(props.generators));
+        } catch (e) {
+            setErrorMsg("Issue exporting generators.");
         }
     };
 
@@ -70,7 +83,7 @@ function Home(props) {
 
         <Row>
             <Col xs={4}>
-                <Button variant="primary" onClick={() => setJsonString(generatorsToJson(props.generators))}>Export Generator set JSON</Button>
+                <Button variant="primary" onClick={handleExportClick}>Export Generator set JSON</Button>
             </Col>
         </Row>
 

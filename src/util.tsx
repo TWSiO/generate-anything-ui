@@ -1,5 +1,8 @@
 import * as _ from "lodash/fp";
 
+// _.flip(_.get) doesn't quite work like this.
+export const getObjKey = obj => key => obj[key];
+
 export type GeneratorReference = {
     kind: "reference";
     name: string;
@@ -17,13 +20,15 @@ function generatorToJson(generator) {
 
     switch(generator.kind) {
         case "table":
-            clone.table = clone.table.map(value => {
+            const justGenToJson = value => {
                 if ((typeof value === "object") && ("kind" in value)) {
                     return referencedGeneratorToJson(value);
                 } else {
                     return value
                 }
-            });
+            }
+
+            clone.table = clone.table.map(justGenToJson);
 
             return clone;
         case "entity":
@@ -40,7 +45,6 @@ const dereferenceGenerator = _.curry((all, ref) => {
 
     if ((typeof ref === "object") && ("kind" in ref) && ref.kind === "reference") {
         if (!(ref.name in all)) {
-            // TODO
             throw new Error("Invalid generator JSON");
         }
 
@@ -52,7 +56,6 @@ const dereferenceGenerator = _.curry((all, ref) => {
 
 function jsonToGenerator(all, generator) {
     if (!(generator.name in all)) {
-        // TODO
         throw new Error("Invalid generator JSON");
     }
 
@@ -76,7 +79,6 @@ export function jsonToGenerators(jsonString) {
     const deserialized = JSON.parse(jsonString);
 
     if (typeof deserialized !== "object") {
-        // TODO Invalid
         throw new Error("Invalid generator JSON");
     }
 

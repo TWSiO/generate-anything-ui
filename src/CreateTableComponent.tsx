@@ -11,6 +11,26 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
+function uncurriedHandleSubmit(values, setTableError, setGenerators, name, navigate, event) {
+    event.preventDefault();
+
+    // Validation
+    // TODO Check and make sure there's at least one value in the table as well.
+    if (values.includes(emptyGenerator))) {
+        setTableError(<Alert variant={"danger"}>Can't have an empty generator field</Alert>);
+    } else if (name === "") {
+        setTableError(<Alert variant={"danger"}>Generator name cannot be blank</Alert>);
+    } else {
+        setTableError(null);
+        const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
+        setGenerators({kind: "set", key: name, value: newTable});
+
+        navigate(`/generator/${name}`)
+    }
+}
+
+const handleSubmit = _.curry(uncurriedHandleSubmit);
+
 export function EditTableComponent(props) {
 
     const setEventValue = (setter) => (event) => setter(event.target.value);
@@ -59,24 +79,6 @@ export function EditTableComponent(props) {
                 );
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        // Validation
-        // TODO Check and make sure there's at least one value in the table as well.
-        if (values.includes(emptyGenerator))) {
-            setTableError(<Alert variant={"danger"}>Can't have an empty generator field</Alert>);
-        } else if (name === "") {
-            setTableError(<Alert variant={"danger"}>Generator name cannot be blank</Alert>);
-        } else {
-            setTableError(null);
-            const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
-            props.setGenerators({kind: "set", key: name, value: newTable});
-
-            navigate(`/generator/${name}`)
-        }
-    };
-
     const setValue = index => value => {
         values[index] = value;
         valuesDispatch({kind: "set", index: index, value: value});
@@ -91,7 +93,7 @@ export function EditTableComponent(props) {
     });
 
     return (
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit(values, setTableError, props.setGenerators, name, navigate)}>
                 {tableError}
 
                 {nameField}

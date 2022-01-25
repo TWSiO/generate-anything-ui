@@ -6,7 +6,7 @@ import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
 import GeneratorPage from "./GeneratorPage";
 import ExamplesPage from "./ExamplesPage";
-import About from "./About";
+import AboutPage from "./AboutPage";
 import Generate from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as _ from "lodash/fp";
@@ -45,7 +45,7 @@ export default function App() {
                 element={<Home generators={generators} setGenerators={setGenerators} />}
                 />
 
-                <Route path="/about" element={<About />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/examples" element={<ExamplesPage />} />
 
                 <Route path="/generator/create" element={<CreateGeneratorComponent />}>
