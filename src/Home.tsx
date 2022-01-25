@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
+import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import * as _ from "lodash/fp";
 import Button from "react-bootstrap/Button";
@@ -7,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
+import Alert from "react-bootstrap/Alert";
 
 function Home(props) {
     const [jsonString, setJsonString] = useState("");
@@ -21,7 +23,7 @@ function Home(props) {
     let jsonElem = "";
     if (jsonString !== "") {
         jsonElem = (
-            <Card bg="Secondary" body>
+            <Card body>
                 <code>{jsonString}</code>
             </Card>
         );
@@ -47,7 +49,12 @@ function Home(props) {
     };
 
     return (<main className="container">
-        <p>Info about the site</p>
+        <h1>Welcome!</h1>
+
+        <p className="mt-2">This site provides the ability to create randomly generated values which can also reference other randomly generated values. This means you can randomly generate an infinite amount of related values which can be useful for use in things like Dungeons & Dragons and other Tabletop Roleplaying Games. Visit the <Link to="/about">about page</Link> for more information.</p>
+
+
+        <Alert variant={"danger"}>If you close or refresh the page generators and everything will be lost. Make sure to copy and save the exported JSON of any generators you want to save as well as any seeds you want to save.</Alert>
 
         <h2>Import Generators</h2>
 

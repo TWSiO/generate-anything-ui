@@ -1,11 +1,11 @@
 import * as _ from "lodash/fp";
 
-export type GeneratorReference<T> = {
+export type GeneratorReference = {
     kind: "reference";
     name: string;
 }
 
-function referencedGeneratorToJson<T>(referencedGenerator): GeneratorReference<T> {
+function referencedGeneratorToJson(referencedGenerator): GeneratorReference {
     return {
         kind: "reference",
         name: referencedGenerator.name,

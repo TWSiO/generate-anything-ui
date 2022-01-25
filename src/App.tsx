@@ -5,8 +5,9 @@ import CreateGeneratorComponent from "./CreateGeneratorComponent";
 import CreateTableComponent from "./CreateTableComponent";
 import CreateEntityComponent from "./CreateEntityComponent";
 import GeneratorPage from "./GeneratorPage";
+import ExamplesPage from "./ExamplesPage";
 import About from "./About";
-import Generate, { SetSeed } from "./Generate";
+import Generate from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as _ from "lodash/fp";
 import Container from "react-bootstrap/Container";
@@ -45,6 +46,7 @@ export default function App() {
                 />
 
                 <Route path="/about" element={<About />} />
+                <Route path="/examples" element={<ExamplesPage />} />
 
                 <Route path="/generator/create" element={<CreateGeneratorComponent />}>
 
@@ -58,7 +60,6 @@ export default function App() {
 
                 </Route>
 
-                <Route path="/generator/run/:name" element={<SetSeed />} />
                 <Route path="/generator/:name/run/:seed" element={<Generate generators={generators} />} />
                 <Route path="/generator/:name" element={<GeneratorPage generators={generators} setGenerators={setGenerators} />} />
 

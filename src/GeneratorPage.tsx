@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import EditGeneratorComponent from "./EditGeneratorComponent";
 import { SetSeed } from "./Generate";
+import Alert from "react-bootstrap/Alert";
 
 function NotFound() {
     return (<main className="container">
@@ -11,6 +12,8 @@ function NotFound() {
 }
 
 export default function GeneratorPage(props) {
+    const [seedMsg, setSeedMsg] = useState(null);
+
     const initName = useParams().name;
 
     const generator = props.generators[initName];
@@ -24,9 +27,11 @@ export default function GeneratorPage(props) {
 
         <h2>Run Generator</h2>
 
-        <p>Probably note to save seed here.</p>
+        <Alert variant={"warning"}>If you want to refer back to some generated values, or generate the same values, make sure to save the input seed.</Alert>
 
-        <SetSeed name={initName} />
+        {seedMsg}
+
+        <SetSeed name={initName} setMessage={setSeedMsg} />
 
         <h2>Edit</h2>
         <EditGeneratorComponent generators={props.generators} setGenerators={props.setGenerators} />

@@ -124,7 +124,7 @@ export default function CreateTableComponent(props) {
         <main className="create-table container">
             <h2>Creating a table</h2>
 
-            <p>Create a generator that generates a random value from a table.</p>
+            <p>A table generator generates a random value from the generator's table set here.</p>
 
             <EditTableComponent {...props} />
 
