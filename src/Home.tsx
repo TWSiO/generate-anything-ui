@@ -33,9 +33,11 @@ function Home(props) {
 
     const handleSubmit = event => {
         event.preventDefault();
+
+        let merged;
         
         try {
-            const merged = mergeGeneratorSets(props.generators, jsonToGenerators(importJson));
+            merged = mergeGeneratorSets(props.generators, jsonToGenerators(importJson));
         } catch (e) {
             setErrorMsg("Invalid generator JSON");
             return;
