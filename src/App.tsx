@@ -1,9 +1,9 @@
 import React, { useReducer, useEffect } from 'react';
 import Header from "./Header";
 import Home from "./Home";
-import CreateGeneratorComponent from "./CreateGeneratorComponent";
-import CreateTableComponent from "./CreateTableComponent";
-import CreateEntityComponent from "./CreateEntityComponent";
+import CreateGeneratorSchema from "./CreateGeneratorSchema";
+import { CreateTableSchemaPage } from "./TableForm";
+import { CreateEntitySchemaPage } from "./EntityForm";
 import GeneratorPage from "./GeneratorPage";
 import ExamplesPage from "./ExamplesPage";
 import AboutPage from "./AboutPage";
@@ -48,14 +48,14 @@ export default function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/examples" element={<ExamplesPage />} />
 
-                <Route path="/generator/create" element={<CreateGeneratorComponent />}>
+                <Route path="/generator/create" element={<CreateGeneratorSchema />}>
 
                     <Route path="table" element={
-                        <CreateTableComponent generators={generators} setGenerators={setGenerators} />
+                        <CreateTableSchemaPage generators={generators} setGenerators={setGenerators} />
                     } />
 
                     <Route path="entity" element={
-                        <CreateEntityComponent generators={generators} setGenerators={setGenerators} />
+                        <CreateEntitySchemaPage generators={generators} setGenerators={setGenerators} />
                     } />
 
                 </Route>

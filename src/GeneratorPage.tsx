@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import EditGeneratorComponent from "./EditGeneratorComponent";
+import EditGeneratorSchema from "./EditGeneratorSchema";
 import { SetSeed } from "./Generate";
 import Alert from "react-bootstrap/Alert";
 
@@ -34,6 +34,6 @@ export default function GeneratorPage(props) {
         <SetSeed name={initName} setMessage={setSeedMsg} />
 
         <h2>Edit</h2>
-        <EditGeneratorComponent generators={props.generators} setGenerators={props.setGenerators} />
+        <EditGeneratorSchema generators={props.generators} setGenerators={props.setGenerators} />
     </main>);
 }

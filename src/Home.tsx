@@ -30,7 +30,7 @@ function Home(props) {
         );
     }
 
-    const list = (name, index) => <LinkContainer to={`/generator/${name}`}><ListGroup.Item action key={index}>{name}</ListGroup.Item></LinkContainer>;
+    const list = (name, index) => <LinkContainer to={`/generator/${name}`} key={index}><ListGroup.Item action>{name}</ListGroup.Item></LinkContainer>;
 
     const handleSubmit = event => {
         event.preventDefault();

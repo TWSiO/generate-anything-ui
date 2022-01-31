@@ -1,8 +1,9 @@
 import React, { useState, useReducer } from "react";
 import * as _ from "lodash/fp";
-import { GeneratorRepr } from "generate-anything";
+import { TableGeneratorSchema, createTableSchema } from "generate-anything";
 import { emptyGenerator, GeneratorField, ValueField } from "./Fields";
 import { useParams, useNavigate  } from "react-router-dom";
+import { passEventValue } from "./util";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Row from "react-bootstrap/Row";
@@ -15,14 +16,13 @@ function uncurriedHandleSubmit(values, setTableError, setGenerators, name, navig
     event.preventDefault();
 
     // Validation
-    // TODO Check and make sure there's at least one value in the table as well.
     if (values.includes(emptyGenerator))) {
         setTableError(<Alert variant={"danger"}>Can't have an empty generator field</Alert>);
     } else if (name === "") {
         setTableError(<Alert variant={"danger"}>Generator name cannot be blank</Alert>);
     } else {
         setTableError(null);
-        const newTable: GeneratorRepr.TableGeneratorRepr = GeneratorRepr.createTable(name, values);
+        const newTable: TableGeneratorSchema = createTableSchema(name, values);
         setGenerators({kind: "set", key: name, value: newTable});
 
         navigate(`/generator/${name}`)
@@ -31,7 +31,32 @@ function uncurriedHandleSubmit(values, setTableError, setGenerators, name, navig
 
 const handleSubmit = _.curry(uncurriedHandleSubmit);
 
-export function EditTableComponent(props) {
+const tableValuesReducer = (state, action) => {
+    switch(action.kind) {
+        case "add":
+            return [...state, action.value];
+
+        case "set":
+            const newList = [...state];
+            newList[action.index] = action.value;
+            return newList;
+        default:
+            throw new Error();
+    }
+};
+
+function createNameField(name, setName) {
+    return (
+            <Row className="mb-2">
+                <Form.Group as={Col} xs={3}>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" value={name} onChange={passEventValue(setName)} />
+                </Form.Group>
+            </Row>
+           );
+}
+
+export function EditTableSchema(props) {
 
     const setEventValue = (setter) => (event) => setter(event.target.value);
 
@@ -46,37 +71,15 @@ export function EditTableComponent(props) {
 
     const [name, setName] = useState(initName);
     const [tableError, setTableError] = useState("");
-    // TODO Add state for individual field messages
 
-    const reducer = (state, action) => {
-        switch(action.kind) {
-            case "add":
-                return [...state, action.value];
-
-            case "set":
-                const newList = [...state];
-                newList[action.index] = action.value;
-                return newList;
-            default:
-                throw new Error();
-        }
-    };
-
-    const [values, valuesDispatch] = useReducer(reducer, initValues);
+    const [values, valuesDispatch] = useReducer(tableValuesReducer, initValues);
 
     const navigate = useNavigate();
 
     let nameField = <h3>{initName}</h3>;
 
     if (initName === "") {
-        nameField = (
-                <Row className="mb-2">
-                    <Form.Group as={Col} xs={3}>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
-                    </Form.Group>
-                </Row>
-                );
+        nameField = createNameField(name, setName);
     }
 
     const setValue = index => value => {
@@ -121,14 +124,14 @@ export function EditTableComponent(props) {
     );
 }
 
-export default function CreateTableComponent(props) {
+export function CreateTableSchemaPage(props) {
     return (
         <main className="create-table container">
             <h2>Creating a table</h2>
 
             <p>A table generator generates a random value from the generator's table set here.</p>
 
-            <EditTableComponent {...props} />
+            <EditTableSchema {...props} />
 
         </main>
     );

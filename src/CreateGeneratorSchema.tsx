@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-export default function CreateGeneratorComponent(props) {
+export default function CreateGeneratorSchema(props) {
     
     return (<Container>
     <h1>Create generator</h1>

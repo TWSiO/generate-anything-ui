@@ -1,7 +1,7 @@
 import React, { useState, useReducer } from "react";
-import { GeneratorRepr } from "generate-anything";
+import { EntityGeneratorSchema, createEntitySchema } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
-import { hasDuplicates } from "./util";
+import { hasDuplicates, passEventValue } from "./util";
 import { useParams, useNavigate } from "react-router-dom";
 import * as _ from "lodash/fp";
 import Button from "react-bootstrap/Button";
@@ -18,7 +18,7 @@ function Attribute(props) {
                 <Row>
                     <Form.Group as={Col}>
                         <Form.Label>Attribute Name</Form.Label>
-                        <Form.Control type="text" value={props.name} onChange={setEventValue(props.setName)} />
+                        <Form.Control type="text" value={props.name} onChange={passEventValue(props.setName)} />
                     </Form.Group>
 
                     <Form.Group as={Col}>
@@ -36,7 +36,7 @@ function Attribute(props) {
 const getNames = _.map(_.flip(_.get)("name"))
 const hasDuplicateNames = _.compose([hasDuplicates, getNames]);
 
-function uncurriedSubmit(navigate, attributes, name, initName, generators, setErrorMsg, setGenerators, event) {
+function uncurriedSubmit(navigate, attributes, name, generators, setErrorMsg, setGenerators, event) {
     event.preventDefault();
 
     if (hasDuplicateNames(attributes)) {
@@ -54,7 +54,7 @@ function uncurriedSubmit(navigate, attributes, name, initName, generators, setEr
         let setEntity;
         // Set the new entity value
         if (!(name in generators)) {
-            setEntity = GeneratorRepr.createEntity(name, objAttr);
+            setEntity = createEntitySchema(name, objAttr);
         } else {
             const toModify = generators[name]
             toModify.attributes = objAttr;
@@ -67,8 +67,44 @@ function uncurriedSubmit(navigate, attributes, name, initName, generators, setEr
 }
 
 const submit = _.curry(uncurriedSubmit);
+    
+const attributesReducer = (state, action) => {
+    switch(action.kind) {
+        case "add":
+            return [...state, {name: action.name, value: action.value}];
+        case "setName":
+            const newList = [...state];
+            newList[action.index].name = action.name;
+            return newList;
+        case "setValue":
+            const otherNewList = [...state];
+            otherNewList[action.index].value = action.value;
+            return otherNewList;
+        default:
+            throw new Error();
+    }
+};
 
-export function EditEntityComponent(props) {
+const addAttribute = attributesDispatch => () => {
+    attributesDispatch({
+    kind: "add",
+    name: "",
+    value: emptyGenerator,
+    });
+}
+
+function createNameField(name, setName) {
+    return (
+            <Row className="mb-2">
+                <Form.Group as={Col} xs={3}>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
+                </Form.Group>
+            </Row>
+           );
+}
+
+export function EditEntitySchema(props) {
     const [errorMsg, setErrorMsg] = useState("");
 
     const navigate = useNavigate();
@@ -89,45 +125,13 @@ export function EditEntityComponent(props) {
     }
 
     const [name, setName] = useState(initName);
-    
-    const reducer = (state, action) => {
-        switch(action.kind) {
-            case "add":
-                return [...state, {name: action.name, value: action.value}];
-            case "setName":
-                const newList = [...state];
-                newList[action.index].name = action.name;
-                return newList;
-            case "setValue":
-                const otherNewList = [...state];
-                otherNewList[action.index].value = action.value;
-                return otherNewList;
-            default:
-                throw new Error();
-        }
-    };
 
-    const [attributes, attributesDispatch] = useReducer(reducer, initAttributes);
+    const [attributes, attributesDispatch] = useReducer(attributesReducer, initAttributes);
 
     let nameField = <h3>{initName}</h3>;
 
     if (initName === "") {
-        nameField = (
-                <Row className="mb-2">
-                    <Form.Group as={Col} xs={3}>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={name} onChange={setEventValue(setName)} />
-                    </Form.Group>
-                </Row>
-                );
-    }
-
-    const addAttribute = () => {
-        attributesDispatch({
-        kind: "add",
-        name: "",
-        value: emptyGenerator,
-        });
+        nameField = createNameField(name, setName);
     }
 
     const setAttributeName = index => name => attributesDispatch({kind: "setName", index: index, name: name});
@@ -147,14 +151,14 @@ export function EditEntityComponent(props) {
 
     return (<React.Fragment>
             {errorMsgComponent}
-            <Form onSubmit={submit(navigate, attributes, name, initName, props.generators, setErrorMsg, props.setGenerators)}>
+            <Form onSubmit={submit(navigate, attributes, name, props.generators, setErrorMsg, props.setGenerators)}>
                 {nameField}
 
                 <ListGroup className="mb-2">
                     {attributeFields}
                 </ListGroup>
 
-                <Button className="mb-2" onClick={addAttribute}>Add Attribute</Button>
+                <Button className="mb-2" onClick={addAttribute(attributesDispatch)}>Add Attribute</Button>
 
                 <Row><Col>
                     <Button as="input" type="submit" value="Save" />
@@ -163,12 +167,12 @@ export function EditEntityComponent(props) {
     </React.Fragment>);
 }
 
-export default function CreateEntityComponent(props) {
+export function CreateEntitySchemaPage(props) {
         return (<main className="create-entity container">
             <h2>Creating an Entity</h2>
             <p>An entity generator generates an entity which has other values generated by other generators as attributes.</p>
             <p>This allows you to create some entity with randomized attributes.</p>
-            <EditEntityComponent {...props} />
+            <EditEntitySchema {...props} />
         </main>
         );
 }
