@@ -1,26 +1,26 @@
 import * as _ from "lodash/fp";
 import Form from "react-bootstrap/Form";
-import { getObjKey } from "./util";
+import { passEventValue } from "./util";
 
 export const emptyGenerator: unique symbol = Symbol();
 
+/**
+ * Creates a select field for selecting from a list of generators.
+ */
 export function GeneratorField(props) {
+
+    const selectGenerator = genName => {
+        const gen = props.generators[genName];
+        props.generatorSetter(gen);
+    }
+
+    let value;
 
     const options = Object.keys(props.generators)
         .map(key => <option value={key}>{key}</option>);
 
-    const getVal = _.get("target.value")
-
-    const selectGenerator = _.compose([
-        props.generatorSetter,
-        getObjKey(props.generators),
-        getVal
-        ]);
-
-    let value;
-
     if (options.length === 0) {
-        return <p>No generators defined. This attribute won't be saved.</p>;
+        return <p>No generators currently defined. This attribute won't be saved.</p>;
     } else if (props.value === emptyGenerator) {
         
         // Setting it to the first value since that's what dropdown list defaults to.
@@ -32,13 +32,12 @@ export function GeneratorField(props) {
         value = props.value.name;
     }
 
-    return <Form.Select value={value} onChange={selectGenerator}>{options}</Form.Select>;
+    return <Form.Select value={value} onChange={passEventValue(selectGenerator)}>{options}</Form.Select>;
 }
 
+/**
+ * Creates a text field to enter scalar values.
+ */
 export function ValueField(props) {
-    const temp = event => {
-        props.setValue(event.target.value)
-    };
-
-    return <Form.Control type="text" value={props.value} onChange={temp} />;
+    return <Form.Control type="text" value={props.value} onChange={passEventValue(props.setValue)} />;
 }

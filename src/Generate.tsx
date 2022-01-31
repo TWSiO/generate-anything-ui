@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as _ from "lodash/fp";
 import { useParams, useNavigate } from "react-router-dom";
 import { newRoot, root } from "generate-anything";
+import { passEventValue } from "./util";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
@@ -39,7 +40,7 @@ export function SetSeed(props) {
                     type="text"
                     placeholder="seed"
                     value={seed}
-                    onChange={event => setSeed(event.target.value)}
+                    onChange={passEventValue(setSeed)}
                     />
 
 

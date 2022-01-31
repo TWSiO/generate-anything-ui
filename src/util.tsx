@@ -99,3 +99,7 @@ export function mergeGeneratorSets(setA, setB) {
 
     return {...setA, ...setB};
 }
+
+export const getEventValue = _.get("target.value");
+
+export const passEventValue = fn => event => _.compose(fn, getEventValue)(event);

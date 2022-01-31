@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import { hasDuplicates, passEventValue } from "./util";
 import * as _ from "lodash/fp";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -74,7 +75,7 @@ function Home(props) {
         <h2>Import Generators</h2>
 
         <form onSubmit={handleSubmit}>
-            <textarea className="mb-2" value={importJson} onChange={event => setImportJson(event.target.value)} />
+            <textarea className="mb-2" value={importJson} onChange={passEventValue(setImportJson)} />
             {errorMsgComponent}
             <div>
                 <Button as="input" type="submit" value="Merge imported JSON" />
