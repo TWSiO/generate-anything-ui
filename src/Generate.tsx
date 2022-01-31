@@ -1,55 +1,15 @@
 import React, { useState } from "react";
 import * as _ from "lodash/fp";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { newRoot, root } from "generate-anything";
-import { passEventValue } from "./util";
+import { NotFound } from "./util";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
-
-export function SetSeed(props) {
-    const navigate = useNavigate();
-
-    const [seed, setSeed] = useState("");
-
-    const handleRun = event => {
-        event.preventDefault();
-
-        if (seed === "") {
-            props.setMessage(<Alert variant={"danger"}>Seed should not be blank</Alert>);
-        } else {
-            props.setMessage("");
-            navigate(`/generator/${props.name}/run/${seed}`);
-        }
-    };
-
-    return (
-        <Form onSubmit={handleRun}>
-            <Form.Group>
-                <Form.Label>Seed</Form.Label>
-
-                <InputGroup>
-                    <Button onClick={() => setSeed(String(Math.random()).slice(2))}>Random Seed</Button>
-                    <Form.Control
-                    type="text"
-                    placeholder="seed"
-                    value={seed}
-                    onChange={passEventValue(setSeed)}
-                    />
-
-
-                    <Button as="input" type="submit" value="Run" />
-                </InputGroup>
-            </Form.Group>
-        </Form>
-    );
-}
 
 function GeneratorValue(props) {
     const handleClick = event => props.setCurrent(props.value);
@@ -100,18 +60,6 @@ function TableValue(props) {
     }
 
     return displayVal;
-}
-
-function OneLevel(props) {
-    const vals = props.value.getAll();
-    const createGenVal = (key, i) => (
-        <ListGroup.Item key={i}>
-            <GeneratorValue header={key} value={vals[key]} setCurrent={props.setCurrent} />
-        </ListGroup.Item>
-    );
-    const attributes = Object.keys(vals).map(createGenVal);
-
-    return <ListGroup>{attributes}</ListGroup>;
 }
 
 function uncurriedAttributeDisplay(vals, setCurrent, name) {
@@ -166,13 +114,6 @@ function Value(props) {
         default:
             throw new Error("Unrecognized value kind.");
     }
-}
-
-function NotFound() {
-    return (<main className="container">
-                <h1>Generator Not Found</h1>
-                <p>Generator wasn't found for this URL. Generators disappear when the page is refreshed so the generator may have disappeared. Make sure to frequently export generators to save them.</p>
-            </main>);
 }
 
 export default function Generate(props) {

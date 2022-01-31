@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { generatorsToJson, jsonToGenerators, duplicateNames, mergeGeneratorSets } from "./util";
+import { duplicateNames, mergeGeneratorSets } from "./util";
+import { generatorsToJson, jsonToGenerators } from "./GeneratorJson";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { hasDuplicates, passEventValue } from "./util";
