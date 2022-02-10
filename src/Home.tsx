@@ -3,8 +3,7 @@ import { duplicateNames, mergeGeneratorSets } from "./util";
 import { generatorsToJson, jsonToGenerators } from "./GeneratorJson";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-import { hasDuplicates, passEventValue } from "./util";
-import * as _ from "lodash/fp";
+import { passEventValue } from "./util";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -68,10 +67,10 @@ function Home(props) {
     return (<main className="container">
         <h1>Welcome!</h1>
 
-        <p className="mt-2">This site provides the ability to create randomly generated values which can also reference other randomly generated values. This means you can randomly generate an infinite amount of related values which can be useful for use in things like Dungeons & Dragons and other Tabletop Roleplaying Games. Visit the <Link to="/about">about page</Link> for more information.</p>
+        <p className="mt-2">This site provides the ability to create generators which generate random values which can also reference other randomly generated values. This means you can randomly generate an infinite amount of related values which can be useful for use in things like Dungeons & Dragons and other Tabletop Roleplaying Games. Visit the <Link to="/about">about page</Link> for more information.</p>
 
 
-        <Alert variant={"danger"}>If you close or refresh the page generators and everything will be lost. Make sure to copy and save the exported JSON of any generators you want to save as well as any seeds you want to save.</Alert>
+        <Alert variant={"danger"}>If you close or refresh the page, all the current generators and everything will be lost. Make sure to copy and save the exported JSON of any generators you want to save as well as any seeds you want to save.</Alert>
 
         <h2>Import Generators</h2>
 

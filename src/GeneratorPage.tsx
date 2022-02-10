@@ -61,7 +61,7 @@ export default function GeneratorPage(props) {
 
         <h2>Run Generator</h2>
 
-        <Alert variant={"warning"}>If you want to refer back to some generated values, or generate the same values, make sure to save the input seed.</Alert>
+        <Alert variant={"warning"}>If you want to regenerate the same values later, make sure to save the input seed.</Alert>
 
         {seedMsg}
 

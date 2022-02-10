@@ -1,5 +1,5 @@
 import React, { useState, useReducer } from "react";
-import { EntityGeneratorSchema, createEntitySchema } from "generate-anything";
+import { createEntitySchema } from "generate-anything";
 import { emptyGenerator, GeneratorField } from "./Fields";
 import { hasDuplicates, passEventValue } from "./util";
 import { useParams, useNavigate } from "react-router-dom";
@@ -72,14 +72,16 @@ const attributesReducer = (state, action) => {
     switch(action.kind) {
         case "add":
             return [...state, {name: action.name, value: action.value}];
-        case "setName":
+        case "setName": {
             const newList = [...state];
             newList[action.index].name = action.name;
             return newList;
-        case "setValue":
+        }
+        case "setValue": {
             const otherNewList = [...state];
             otherNewList[action.index].value = action.value;
             return otherNewList;
+        }
         default:
             throw new Error();
     }
@@ -141,6 +143,7 @@ export function EditEntitySchema(props) {
         .map((attribute, index) =>
             <Attribute
             index={index}
+            key={index}
             name={attribute.name}
             value={attribute.value}
             generators={props.generators}

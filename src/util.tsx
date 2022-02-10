@@ -1,3 +1,4 @@
+import React from "react";
 import * as _ from "lodash/fp";
 
 // _.flip(_.get) doesn't quite work like this.
@@ -27,9 +28,9 @@ export const getEventValue = _.get("target.value");
 
 export const passEventValue = fn => event => _.compose(fn, getEventValue)(event);
 
-function NotFound() {
+export function NotFound() {
     return (<main className="container">
                 <h1>Generator Not Found</h1>
-                <p>Generator wasn't found for this URL. Generators disappear when the page is refreshed so the generator may have disappeared. Make sure to frequently export generators to save them.</p>
+                <p>Generator wasn&apos;t found for this URL. Generators disappear when the page is refreshed so the generator may have disappeared. Make sure to frequently export generators to save them.</p>
             </main>);
 }

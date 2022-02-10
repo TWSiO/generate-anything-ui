@@ -16,8 +16,8 @@ function uncurriedHandleSubmit(values, setTableError, setGenerators, name, navig
     event.preventDefault();
 
     // Validation
-    if (values.includes(emptyGenerator))) {
-        setTableError(<Alert variant={"danger"}>Can't have an empty generator field</Alert>);
+    if (values.includes(emptyGenerator)) {
+        setTableError(<Alert variant={"danger"}>Can&apos;t have an empty generator field</Alert>);
     } else if (name === "") {
         setTableError(<Alert variant={"danger"}>Generator name cannot be blank</Alert>);
     } else {
@@ -36,10 +36,11 @@ const tableValuesReducer = (state, action) => {
         case "add":
             return [...state, action.value];
 
-        case "set":
+        case "set": {
             const newList = [...state];
             newList[action.index] = action.value;
             return newList;
+        }
         default:
             throw new Error();
     }
@@ -57,8 +58,6 @@ function createNameField(name, setName) {
 }
 
 export function EditTableSchema(props) {
-
-    const setEventValue = (setter) => (event) => setter(event.target.value);
 
     let initName = useParams()?.name;
     let initValues = [];
@@ -129,7 +128,7 @@ export function CreateTableSchemaPage(props) {
         <main className="create-table container">
             <h2>Creating a table</h2>
 
-            <p>A table generator generates a random value from the generator's table set here.</p>
+            <p>A table generator generates a random value from the generator&apos;s table set here.</p>
 
             <EditTableSchema {...props} />
 

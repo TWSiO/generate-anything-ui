@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer } from 'react';
 import Header from "./Header";
 import Home from "./Home";
 import CreateGeneratorSchema from "./CreateGeneratorSchema";
@@ -9,10 +9,6 @@ import ExamplesPage from "./ExamplesPage";
 import AboutPage from "./AboutPage";
 import Generate from "./Generate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import * as _ from "lodash/fp";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 // This would probably be easier with redux. Will probably refactor later.
 function keyValueReducer(state, action) {

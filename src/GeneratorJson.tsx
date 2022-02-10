@@ -11,18 +11,19 @@ function generatorToJson(generator) {
     const clone = _.clone(generator);
 
     switch(generator.kind) {
-        case "table":
+        case "table": {
             const justGenToJson = value => {
                 if ((typeof value === "object") && ("kind" in value)) {
                     return referencedGeneratorToJson(value);
                 } else {
                     return value
                 }
-            }
+            };
 
             clone.table = clone.table.map(justGenToJson);
 
             return clone;
+        }
         case "entity":
             clone.attributes = _.mapValues(referencedGeneratorToJson)(clone.attributes);
             return clone;

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import { LinkContainer } from "react-router-bootstrap";
 import Container from "react-bootstrap/Container";
@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-export default function CreateGeneratorSchema(props) {
+export default function CreateGeneratorSchema() {
     
     return (<Container>
     <h1>Create generator</h1>

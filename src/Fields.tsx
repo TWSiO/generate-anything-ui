@@ -1,4 +1,4 @@
-import * as _ from "lodash/fp";
+import React from "react";
 import Form from "react-bootstrap/Form";
 import { passEventValue } from "./util";
 
@@ -17,10 +17,10 @@ export function GeneratorField(props) {
     let value;
 
     const options = Object.keys(props.generators)
-        .map(key => <option value={key}>{key}</option>);
+        .map((name, i) => <option value={name} key={i}>{name}</option>);
 
     if (options.length === 0) {
-        return <p>No generators currently defined. This attribute won't be saved.</p>;
+        return <p>No generators currently defined. This attribute won&apos;t be saved.</p>;
     } else if (props.value === emptyGenerator) {
         
         // Setting it to the first value since that's what dropdown list defaults to.
