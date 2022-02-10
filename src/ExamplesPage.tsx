@@ -4,7 +4,7 @@ import Card from "react-bootstrap/Card";
 export default function ExamplesPage() {
     return (<main className="container">
         <h1>Examples</h1>
-        <p>Some examples exported as JSON are provided here. You can copy and paste them into the generator import functionality on the home page to add them to your generators.</p>
+        <p>Some examples, given as JSON that can be imported, are provided here.</p>
 
 
         <Card>
