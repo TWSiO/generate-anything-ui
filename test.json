@@ -1,0 +1,1 @@
+{"First Name":{"kind":"table","name":"First Name","table":["John","Jacob","Jinglemeyer"]},"Last Name":{"kind":"table","name":"Last Name","table":["Smith","Doe","Wilson"]},"Person":{"kind":"entity","name":"Person","attributes":{"First":{"kind":"reference","name":"First Name"},"Last":{"kind":"reference","name":"Last Name"}}}}
